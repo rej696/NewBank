@@ -17,3 +17,8 @@ Returns SUCCESS or FAIL
 PAY <Person/Company> <Ammount>
 e.g. PAY John 100
 Returns SUCCESS or FAIL
+
+// Micro-loan service 
+LOAN <Amount> <FromAccountX> <ToPersonY>
+e.g. LOAN 500 Main John
+Returns SUCCESS or FAIL
