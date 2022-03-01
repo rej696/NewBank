@@ -2,3 +2,6 @@
 .classpath
 **/build/**
 **/logs/**
+/newbank/.idea/
+/newbank/newbank.iml
+/newbank/out
