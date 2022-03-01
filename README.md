@@ -5,4 +5,4 @@ This software project aims to develop a dirsuptive software solution for the "Ne
 Customers shall be able to interact with their accounts via a command-line interface.
 The form of communication is client-server.
 In addition, the software solution should offer a micro-loan marketplace as a service
-where NewBank customers can offer micro-loans to other NewBank customers.
+where NewBank customers can offer micro-loans to other NewBank customers or other innovative services.
