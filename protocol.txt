@@ -19,6 +19,6 @@ e.g. PAY John 100
 Returns SUCCESS or FAIL
 
 // Micro-loan service 
-LOAN <Amount> <FromAccountX> <ToPersonY>
-e.g. LOAN 500 Main John
+OFFERLOAN <Amount> <FromAccountX> <ToPersonY> <Interest>
+e.g. OFFERLOAN 500 Main John 0.5
 Returns SUCCESS or FAIL
