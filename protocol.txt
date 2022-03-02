@@ -20,5 +20,5 @@ Returns SUCCESS or FAIL
 
 // Micro-loan service 
 OFFERLOAN <Amount> <FromAccountX> <ToPersonY> <Interest>
-e.g. OFFERLOAN 500 Main John 0.5
+e.g. OFFERLOAN 500 Main John 0.05
 Returns SUCCESS or FAIL
