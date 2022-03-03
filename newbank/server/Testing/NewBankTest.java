@@ -1,7 +1,9 @@
-package newbank.server;
+package newbank.server.Testing;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import newbank.server.CustomerID;
+import newbank.server.NewBank;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
