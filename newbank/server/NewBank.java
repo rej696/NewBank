@@ -33,6 +33,10 @@ public class NewBank {
 		thomas.addAccount(new Account("Savings", 1550.0));
 		customers.put("Thomas", thomas);
 
+		Customer tester = new Customer();
+		tester.addAccount(new Account("Main", 1000.00));
+		customers.put("tester", tester);
+
 	}
 	
 	public static NewBank getBank() {
