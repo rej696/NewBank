@@ -21,4 +21,15 @@ public class Customer {
 	public void addAccount(Account account) {
 		accounts.add(account);		
 	}
+
+    public Account getAccount(String accountNumber) {
+		for (Account account : accounts) {
+			String accountNumber1 = account.getAccountNumber();
+			if (accountNumber1.equals(accountNumber)) {
+				return account;
+			}
+		}
+	return null;
+
+    }
 }

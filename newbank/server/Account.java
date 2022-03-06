@@ -1,22 +1,35 @@
 package newbank.server;
 
-import java.time.LocalDateTime;
-import java.util.Random;
-
 public class Account {
 
 	private String accountNumber;
 	private String accountName;
-	private double openingBalance;
+	private double balance;
 
 	public Account(String accountNumber, String accountName, double openingBalance) {
 		this.accountNumber = accountNumber;
 		this.accountName = accountName;
-		this.openingBalance = openingBalance;
+		this.balance = openingBalance;
+	}
+
+	public boolean credit(double amount){
+		balance += amount;
+		return true;
+	}
+
+	public boolean debit(double amount){
+		if (balance < amount) {
+			return false;
+		}
+		balance -= amount;
+		return true;
 	}
 
 	public String toString() {
-		return (accountNumber + " " + accountName + ": " + openingBalance);
+		return (accountNumber + " " + accountName + ": " + balance);
 	}
 
+	public String getAccountNumber() {
+		return accountNumber;
+	}
 }

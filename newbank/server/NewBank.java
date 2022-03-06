@@ -13,6 +13,11 @@ public class NewBank {
 		customers = new HashMap<>();
 		addTestData();
 	}
+
+	public boolean addCustomer(Customer customer, String customerID) {
+		this.customers.put(customerID, customer);
+		return true;
+	}
 	
 	private void addTestData() {
 		Customer kim = new Customer();
@@ -66,15 +71,34 @@ public class NewBank {
 			switch(command) {
 			case "SHOWMYACCOUNTS" : return showMyAccounts(customer);
 				case "NEWACCOUNT" : {
-				if(stringInputs.length > 1) {
-					String name = stringInputs[1];
-					return createAccount(customer, name);
-				}
+					if (stringInputs.length > 1) {
+						String name = stringInputs[1];
+						return createAccount(customer, name);
+					}
 				};
+				case "MOVE": {
+					if (stringInputs.length > 3) {
+						return moveFunds(customer, Double.parseDouble(stringInputs[1]),stringInputs[2],stringInputs[3]);
+					}
+				}
 			default : return "FAIL";
 			}
 		}
 		return "FAIL";
+	}
+
+	private String moveFunds(CustomerID customerID, double amount, String fromAccountNumber, String toAccountNumber) {
+		Customer customer = customers.get(customerID.getKey());
+		Account account1 = customer.getAccount(fromAccountNumber);
+		Account account2 = customer.getAccount(toAccountNumber);
+		if(account1 == null || account2 == null){
+			return "Account number invalid";
+		}
+		if(!account1.debit(amount)){
+			return "Insufficient funds";
+		}
+		account2.credit(amount);
+		return "Success. " + amount + " moved from " + fromAccountNumber + " to " + toAccountNumber + "\n\nNew Balance\n\n" + account1.toString() + "\n" + account2.toString();
 	}
 
 	private String createAccount(CustomerID customerId, String name) {

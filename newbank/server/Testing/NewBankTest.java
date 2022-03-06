@@ -1,7 +1,6 @@
 package newbank.server.Testing;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import newbank.server.Account;
 import newbank.server.Customer;
 import newbank.server.CustomerID;
 import newbank.server.NewBank;
@@ -67,6 +66,23 @@ class NewBankTest {
         String result = test.processRequest(customerID, "NEWACCOUNT SAVING!");
 
         Assertions.assertEquals("Account not created. Illegal account name", result);
+
+    }
+
+    @Test
+    void moveFunds(){
+
+        // Inizialisation
+        NewBank test = NewBank.getBank();
+        CustomerID customerID = test.checkLogInDetails(username, password);
+        Customer testCustomer = new Customer();
+        testCustomer.addAccount(new Account("12345678","Current",1000));
+        testCustomer.addAccount(new Account("23456789","Savings",1001));
+        test.addCustomer(testCustomer, "TestID");
+
+        String result = test.processRequest(new CustomerID("TestID"), "MOVE 100 12345678 23456789");
+
+        Assertions.assertEquals("Success. 100.0 moved from 12345678 to 23456789\n\nNew Balance\n\n12345678 Current: 900.0\n23456789 Savings: 1101.0", result);
 
     }
 }
