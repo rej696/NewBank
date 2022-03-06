@@ -1,11 +1,13 @@
 package newbank.server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NewBank {
 	
 	private static final NewBank bank = new NewBank();
 	private HashMap<String,Customer> customers;
+	private ArrayList<String> accountNumbers = new ArrayList<>();
 	
 	private NewBank() {
 		customers = new HashMap<>();
@@ -14,34 +16,39 @@ public class NewBank {
 	
 	private void addTestData() {
 		Customer kim = new Customer();
-		kim.addAccount(new Account("Checking", 1050.0));
+		kim.addAccount(new Account(generateAccountNumber(), "Checking", 1050.0));
 		customers.put("Kim", kim);
 
 		Customer andy = new Customer();
-		andy.addAccount(new Account("Main", 3000.0));
+		andy.addAccount(new Account(generateAccountNumber(),"Main", 3000.0));
 		customers.put("Andy", andy);
 		
 		Customer rowan = new Customer();
-		rowan.addAccount(new Account("Savings", 1500.0));
+		rowan.addAccount(new Account(generateAccountNumber(),"Savings", 1500.0));
 		customers.put("Rowan", rowan);
 
 		Customer damian = new Customer();
-		damian.addAccount(new Account("Savings", 2050.0));
+		damian.addAccount(new Account(generateAccountNumber(),"Savings", 2050.0));
 		customers.put("Damian", damian);
 
 		Customer thomas = new Customer();
-		thomas.addAccount(new Account("Savings", 1550.0));
+		thomas.addAccount(new Account(generateAccountNumber(),"Savings", 1550.0));
 		customers.put("Thomas", thomas);
 
 		Customer tester = new Customer();
-		tester.addAccount(new Account("Main", 1000.00));
+		tester.addAccount(new Account(generateAccountNumber(),"Main", 1000.00));
 		customers.put("tester", tester);
+
+		Customer tester2 = new Customer();
+		customers.put("tester2", tester2);
 
 	}
 	
 	public static NewBank getBank() {
-		return bank;
+		return new NewBank();
 	}
+
+	public Customer getCustomer(CustomerID customerID) {return customers.get(customerID.getKey());}
 	
 	public synchronized CustomerID checkLogInDetails(String userName, String password) {
 		if(customers.containsKey(userName)) {
@@ -53,16 +60,75 @@ public class NewBank {
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processRequest(CustomerID customer, String request) {
 		if(customers.containsKey(customer.getKey())) {
-			switch(request) {
+			String[] stringInputs = request.split(" ");
+			String command = stringInputs[0];
+
+			switch(command) {
 			case "SHOWMYACCOUNTS" : return showMyAccounts(customer);
+				case "NEWACCOUNT" : {
+				if(stringInputs.length > 1) {
+					String name = stringInputs[1];
+					return createAccount(customer, name);
+				}
+				};
 			default : return "FAIL";
 			}
 		}
 		return "FAIL";
 	}
-	
+
+	private String createAccount(CustomerID customerId, String name) {
+
+		if(isValidAccountName(name)) {
+			Customer customer = customers.get(customerId.getKey());
+			customer.addAccount(new Account(generateAccountNumber(), name, 0.00));
+
+			return "Account with name " + name + " was created";
+		}else{
+			return "Account not created. Illegal account name";
+		}
+		}
+
+	private boolean isValidAccountName(String name) {
+		if(name.length() > 30){
+			return false;
+		}
+
+		for (char c: name.toCharArray()) {
+			if(Character.isDigit(c) || Character.isAlphabetic(c) || c == '-'){
+				continue;
+			}else {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	private String showMyAccounts(CustomerID customer) {
-		return (customers.get(customer.getKey())).accountsToString();
+		String accounts = (customers.get(customer.getKey())).accountsToString();
+
+		if(accounts == ""){
+			return "Error customer has no accounts";
+		}
+		return accounts;
+	}
+
+	private String generateAccountNumber() {
+
+		String numberAsString = "";
+
+		do{
+			int number = (int) Math.floor(Math.random()*(99999999-1+1)+1);
+			numberAsString = String.valueOf(number);
+			int difference = 8 - numberAsString.length();
+
+			for (int i = 0; i < difference; i++){
+				numberAsString = "0" + numberAsString;
+			}
+		}while(accountNumbers.contains(numberAsString));
+
+		accountNumbers.add(numberAsString);
+		return numberAsString;
 	}
 
 }
