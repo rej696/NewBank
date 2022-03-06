@@ -6,17 +6,16 @@ import java.util.HashMap;
 public class NewBank {
 	
 	private static final NewBank bank = new NewBank();
-	private HashMap<String,Customer> customers;
-	private ArrayList<String> accountNumbers = new ArrayList<>();
+	private final HashMap<String,Customer> customers;
+	private final ArrayList<String> accountNumbers = new ArrayList<>();
 	
 	private NewBank() {
 		customers = new HashMap<>();
 		addTestData();
 	}
 
-	public boolean addCustomer(Customer customer, String customerID) {
+	public void addCustomer(Customer customer, String customerID) {
 		this.customers.put(customerID, customer);
-		return true;
 	}
 	
 	private void addTestData() {
@@ -50,7 +49,7 @@ public class NewBank {
 	}
 	
 	public static NewBank getBank() {
-		return new NewBank();
+		return bank;
 	}
 
 	public Customer getCustomer(CustomerID customerID) {return customers.get(customerID.getKey());}
@@ -75,7 +74,7 @@ public class NewBank {
 						String name = stringInputs[1];
 						return createAccount(customer, name);
 					}
-				};
+				}
 				case "MOVE": {
 					if (stringInputs.length > 3) {
 						return moveFunds(customer, Double.parseDouble(stringInputs[1]),stringInputs[2],stringInputs[3]);
@@ -93,7 +92,7 @@ public class NewBank {
 	}
 
 	private String makePayment(CustomerID customerID, double amount, String fromAccountNumber, String toAccountNumber) {
-		Customer customer = customers.get(customerID.getKey());
+		Customer customer = this.getCustomer(customerID);
 		Account account1 = customer.getAccount(fromAccountNumber);
 		Account account2 = getAccount(toAccountNumber);
 		if(account1 == null || account2 == null){
@@ -103,7 +102,7 @@ public class NewBank {
 			return "Insufficient funds";
 		}
 		account2.credit(amount);
-		return "Success. " + amount + " payed from " + fromAccountNumber + " to " + toAccountNumber + "\n\nNew Balance\n\n" + account1.toString();
+		return "Success. " + amount + " payed from " + fromAccountNumber + " to " + toAccountNumber + "\n\nNew Balance\n\n" + account1;
 	}
 
 	private Account getAccount(String accountNumber) {
@@ -119,7 +118,7 @@ public class NewBank {
 	}
 
 	private String moveFunds(CustomerID customerID, double amount, String fromAccountNumber, String toAccountNumber) {
-		Customer customer = customers.get(customerID.getKey());
+		Customer customer = this.getCustomer(customerID);
 		Account account1 = customer.getAccount(fromAccountNumber);
 		Account account2 = customer.getAccount(toAccountNumber);
 		if(account1 == null || account2 == null){
@@ -129,13 +128,13 @@ public class NewBank {
 			return "Insufficient funds";
 		}
 		account2.credit(amount);
-		return "Success. " + amount + " moved from " + fromAccountNumber + " to " + toAccountNumber + "\n\nNew Balance\n\n" + account1.toString() + "\n" + account2.toString();
+		return "Success. " + amount + " moved from " + fromAccountNumber + " to " + toAccountNumber + "\n\nNew Balance\n\n" + account1 + "\n" + account2;
 	}
 
 	private String createAccount(CustomerID customerId, String name) {
 
 		if(isValidAccountName(name)) {
-			Customer customer = customers.get(customerId.getKey());
+			Customer customer = this.getCustomer(customerId);
 			customer.addAccount(new Account(generateAccountNumber(), name, 0.00));
 
 			return "Account with name " + name + " was created";
@@ -151,7 +150,6 @@ public class NewBank {
 
 		for (char c: name.toCharArray()) {
 			if(Character.isDigit(c) || Character.isAlphabetic(c) || c == '-'){
-				continue;
 			}else {
 				return false;
 			}
@@ -170,7 +168,7 @@ public class NewBank {
 
 	private String generateAccountNumber() {
 
-		String numberAsString = "";
+		String numberAsString;
 
 		do{
 			int number = (int) Math.floor(Math.random()*(99999999-1+1)+1);
