@@ -81,10 +81,41 @@ public class NewBank {
 						return moveFunds(customer, Double.parseDouble(stringInputs[1]),stringInputs[2],stringInputs[3]);
 					}
 				}
+				case "PAY": {
+					if (stringInputs.length > 3) {
+						return makePayment(customer, Double.parseDouble(stringInputs[1]),stringInputs[2],stringInputs[3]);
+					}
+				}
 			default : return "FAIL";
 			}
 		}
 		return "FAIL";
+	}
+
+	private String makePayment(CustomerID customerID, double amount, String fromAccountNumber, String toAccountNumber) {
+		Customer customer = customers.get(customerID.getKey());
+		Account account1 = customer.getAccount(fromAccountNumber);
+		Account account2 = getAccount(toAccountNumber);
+		if(account1 == null || account2 == null){
+			return "Account number invalid";
+		}
+		if(!account1.debit(amount)){
+			return "Insufficient funds";
+		}
+		account2.credit(amount);
+		return "Success. " + amount + " payed from " + fromAccountNumber + " to " + toAccountNumber + "\n\nNew Balance\n\n" + account1.toString();
+	}
+
+	private Account getAccount(String accountNumber) {
+		for (String key : this.customers.keySet()) {
+			for(Account a : this.customers.get(key).getAllAccounts()) {
+				String accountNumber1 = a.getAccountNumber();
+				if (accountNumber1.equals(accountNumber)) {
+					return a;
+				}
+			}
+		}
+		return null;
 	}
 
 	private String moveFunds(CustomerID customerID, double amount, String fromAccountNumber, String toAccountNumber) {

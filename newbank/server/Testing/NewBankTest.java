@@ -85,4 +85,23 @@ class NewBankTest {
         Assertions.assertEquals("Success. 100.0 moved from 12345678 to 23456789\n\nNew Balance\n\n12345678 Current: 900.0\n23456789 Savings: 1101.0", result);
 
     }
+
+    @Test
+    void makePayment(){
+
+        // Inizialisation
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        testCustomer.addAccount(new Account("12345678","Current",1000));
+        test.addCustomer(testCustomer, "TestID");
+
+        Customer testCustomer2 = new Customer();
+        testCustomer2.addAccount(new Account("23456789","Current",1000));
+        test.addCustomer(testCustomer2, "TestID2");
+
+        String result = test.processRequest(new CustomerID("TestID"), "PAY 100 12345678 23456789");
+
+        Assertions.assertEquals("Success. 100.0 payed from 12345678 to 23456789\n\nNew Balance\n\n12345678 Current: 900.0", result);
+
+    }
 }
