@@ -3,3 +3,6 @@
 **/build/**
 **/logs/**
 *.class
+**/.idea/
+/newbank/newbank.iml
+/newbank/out

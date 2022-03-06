@@ -13,17 +13,30 @@ public class NewBank {
 	}
 	
 	private void addTestData() {
-		Customer bhagy = new Customer();
-		bhagy.addAccount(new Account("Main", 1000.0));
-		customers.put("Bhagy", bhagy);
+		Customer kim = new Customer();
+		kim.addAccount(new Account("Checking", 1050.0));
+		customers.put("Kim", kim);
+
+		Customer andy = new Customer();
+		andy.addAccount(new Account("Main", 3000.0));
+		customers.put("Andy", andy);
 		
-		Customer christina = new Customer();
-		christina.addAccount(new Account("Savings", 1500.0));
-		customers.put("Christina", christina);
-		
-		Customer john = new Customer();
-		john.addAccount(new Account("Checking", 250.0));
-		customers.put("John", john);
+		Customer rowan = new Customer();
+		rowan.addAccount(new Account("Savings", 1500.0));
+		customers.put("Rowan", rowan);
+
+		Customer damian = new Customer();
+		damian.addAccount(new Account("Savings", 2050.0));
+		customers.put("Damian", damian);
+
+		Customer thomas = new Customer();
+		thomas.addAccount(new Account("Savings", 1550.0));
+		customers.put("Thomas", thomas);
+
+		Customer tester = new Customer();
+		tester.addAccount(new Account("Main", 1000.00));
+		customers.put("tester", tester);
+
 	}
 	
 	public static NewBank getBank() {
