@@ -5,12 +5,10 @@ import newbank.server.Customer;
 import newbank.server.CustomerID;
 import newbank.server.NewBank;
 import org.junit.Test;
+
 import static org.junit.Assert.assertTrue;
 
 public class NewBankTest {
-
-    private String username = "tester";
-    private String password = "tester";
 
     @Test
     public void showAccounts() {
@@ -18,7 +16,7 @@ public class NewBankTest {
         NewBank test = NewBank.getBank();
 
         Customer testCustomer = new Customer();
-        testCustomer.addAccount(new Account("12345678","Main",1000));
+        testCustomer.addAccount(new Account("12345678", "Main", 1000));
         CustomerID clientId = new CustomerID("TestID1");
         test.addCustomer(testCustomer, clientId.getKey());
 
@@ -34,7 +32,7 @@ public class NewBankTest {
         // Inizialisation
         NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
-        testCustomer.addAccount(new Account("12345678","Main",1000));
+        testCustomer.addAccount(new Account("12345678", "Main", 1000));
         CustomerID clientId = new CustomerID("TestID1");
         test.addCustomer(testCustomer, clientId.getKey());
 
@@ -60,7 +58,7 @@ public class NewBankTest {
     }
 
     @Test
-    public void createAccountWithToManyCharacters(){
+    public void createAccountWithToManyCharacters() {
 
         // Inizialisation
         NewBank test = NewBank.getBank();
@@ -74,7 +72,7 @@ public class NewBankTest {
     }
 
     @Test
-    public void createAccountWithIllegalCharacters(){
+    public void createAccountWithIllegalCharacters() {
 
         // Inizialisation
         NewBank test = NewBank.getBank();
@@ -88,14 +86,13 @@ public class NewBankTest {
     }
 
     @Test
-    public void moveFunds(){
+    public void moveFunds() {
 
         // Inizialisation
         NewBank test = NewBank.getBank();
-        CustomerID customerID = test.checkLogInDetails(username, password);
         Customer testCustomer = new Customer();
-        testCustomer.addAccount(new Account("12345678","Current",1000));
-        testCustomer.addAccount(new Account("23456789","Savings",1001));
+        testCustomer.addAccount(new Account("12345678", "Current", 1000));
+        testCustomer.addAccount(new Account("23456789", "Savings", 1001));
         CustomerID clientId = new CustomerID("TestID4");
         test.addCustomer(testCustomer, clientId.getKey());
 
@@ -105,17 +102,17 @@ public class NewBankTest {
     }
 
     @Test
-    public void makePayment(){
+    public void makePayment() {
 
         // Inizialisation
         NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
-        testCustomer.addAccount(new Account("12345678","Current",1000));
+        testCustomer.addAccount(new Account("12345678", "Current", 1000));
         CustomerID clientId = new CustomerID("TestID5");
         test.addCustomer(testCustomer, clientId.getKey());
 
         Customer testCustomer2 = new Customer();
-        testCustomer2.addAccount(new Account("23456789","Current",1000));
+        testCustomer2.addAccount(new Account("23456789", "Current", 1000));
         test.addCustomer(testCustomer2, "TestID6");
 
         String result = test.processRequest(clientId, "PAY 100 12345678 23456789");
