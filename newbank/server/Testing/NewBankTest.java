@@ -4,8 +4,6 @@ import newbank.server.Account;
 import newbank.server.Customer;
 import newbank.server.CustomerID;
 import newbank.server.NewBank;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
@@ -13,14 +11,6 @@ public class NewBankTest {
 
     private String username = "tester";
     private String password = "tester";
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     @Test
     public void showAccounts() {
