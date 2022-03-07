@@ -8,16 +8,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
-import junit.framework.JUnit4TestAdapter;
 
 public class NewBankTest {
 
     private String username = "tester";
     private String password = "tester";
-
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(NewBankTest.class);
-    }
 
     @Before
     public void setUp() {
