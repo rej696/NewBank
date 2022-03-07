@@ -7,11 +7,9 @@ public class NewBank {
 
     private static final NewBank bank = new NewBank();
     private HashMap<String, Customer> customers;
-    private ArrayList<String> accountNumbers;
 
     private NewBank() {
         customers = new HashMap<>();
-        accountNumbers = new ArrayList<>();
         addTestData();
     }
 
@@ -55,6 +53,36 @@ public class NewBank {
 
     public Customer getCustomer(CustomerID customerID) {
         return customers.get(customerID.getKey());
+    }
+
+    private ArrayList<Customer> getAllCustomers(){
+        ArrayList<Customer> customersArrayList = new ArrayList<Customer>();
+        for(Customer c : customers.values()){
+            customersArrayList.add(c);
+        }
+        return customersArrayList;
+    }
+
+    private ArrayList<Account> getAllAccounts(){
+        ArrayList<Customer> allCustomers = getAllCustomers();
+        ArrayList<Account> allAccounts = new ArrayList<Account>();
+        ArrayList<Account> customerAccounts = new ArrayList<Account>();
+        for (Customer c : allCustomers){
+            customerAccounts = c.getAllAccounts();
+            for (Account a : customerAccounts){
+                allAccounts.add(a);
+            }
+        }
+        return allAccounts;
+    }
+
+    private ArrayList<String> getAllAccountNumbers(){
+        ArrayList<Account> allAccounts = getAllAccounts();
+        ArrayList<String> allAccountNumbers = new ArrayList<String>();
+        for (Account a : allAccounts){
+            allAccountNumbers.add(a.getAccountNumber());
+        }
+        return allAccountNumbers;
     }
 
     public synchronized CustomerID checkLogInDetails(String userName, String password) {
@@ -112,7 +140,7 @@ public class NewBank {
         account2.credit(amount);
         return accountsBelongToSameCustomer
                 ? "Success. " + amount + " moved from " + fromAccountNumber + " to " + toAccountNumber + "\n\nNew Balance\n\n" + account1 + "\n" + account2
-                : "Success. " + amount + " payed from " + fromAccountNumber + " to " + toAccountNumber + "\n\nNew Balance\n\n" + account1;
+                : "Success. " + amount + " paid from " + fromAccountNumber + " to " + toAccountNumber + "\n\nNew Balance\n\n" + account1;
     }
 
     private Account getAccount(String accountNumber) {
@@ -158,7 +186,7 @@ public class NewBank {
         String accounts = (customers.get(customer.getKey())).accountsToString();
 
         if (accounts == "") {
-            return "ERROR: Customer " + CustomerID.getKey() + " has no accounts";
+            return "ERROR: Customer " + customer.getKey() + " has no accounts";
         }
         return accounts;
     }
@@ -166,6 +194,7 @@ public class NewBank {
     private String generateAccountNumber() {
 
         String numberAsString;
+        ArrayList<String> accountNumbers = getAllAccountNumbers();
 
         do {
             int number = (int) Math.floor(Math.random() * (99999999 - 1 + 1) + 1);
