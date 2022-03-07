@@ -1,5 +1,3 @@
-package newbank.server.Testing;
-
 import newbank.server.Account;
 import newbank.server.Customer;
 import newbank.server.CustomerID;
