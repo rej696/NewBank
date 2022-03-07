@@ -2,6 +2,8 @@
 .classpath
 **/build/**
 **/logs/**
-/newbank/.idea/
+*.class
+**/.idea/
 /newbank/newbank.iml
 /newbank/out
+.DS_Store
