@@ -1,7 +1,7 @@
-import org.junit.Test;
-import static org.junit.Assert.assertTrue;
 import newbank.server.CustomerID;
 import newbank.server.NewBank;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class NewBankTest {
 
@@ -18,6 +18,6 @@ public class NewBankTest {
         String result = teste.processRequest(customerID, "SHOWMYACCOUNTS");
 
         // Should the response show an account name und the current balance
-        assertTrue(result.equals("Main: 1000.0"));
+        Assertions.assertEquals("Main: 1000.0", result);
     }
 }
