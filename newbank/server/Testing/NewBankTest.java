@@ -4,16 +4,31 @@ import newbank.server.Account;
 import newbank.server.Customer;
 import newbank.server.CustomerID;
 import newbank.server.NewBank;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+import junit.framework.JUnit4TestAdapter;
 
-class NewBankTest {
+public class NewBankTest {
 
     private String username = "tester";
     private String password = "tester";
 
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(NewBankTest.class);
+    }
+
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
     @Test
-    void showAccounts() {
+    public void showAccounts() {
         // Inizialisation
         NewBank test = NewBank.getBank();
 
@@ -26,11 +41,11 @@ class NewBankTest {
         String result = test.processRequest(clientId, "SHOWMYACCOUNTS");
 
         // Should the response show an account name und the current balance
-        Assertions.assertEquals("12345678 Main: 1000.0\n", result);
+        assertTrue(result.equals("12345678 Main: 1000.0\n"));
     }
 
     @Test
-    void createAccounts() {
+    public void createAccounts() {
         // Inizialisation
         NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
@@ -41,12 +56,12 @@ class NewBankTest {
         // When the account details are requested
         String result = test.processRequest(clientId, "NEWACCOUNT SAVING");
 
-        Assertions.assertEquals("Account with name SAVING was created", result);
+        assertTrue(result.equals("Account with name SAVING was created"));
     }
 
 
     @Test
-    void showAccountsNoAccount() {
+    public void showAccountsNoAccount() {
         // Inizialisation
         NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
@@ -56,12 +71,11 @@ class NewBankTest {
         // When the account details are requested
         String result = test.processRequest(clientId, "SHOWMYACCOUNTS");
 
-        // Should the response show an account name und the current balance
-        Assertions.assertEquals("Error customer has no accounts", result);
+        assertTrue(result.equals("Error customer has no accounts"));
     }
 
     @Test
-    void createAccountWithToManyCharacters(){
+    public void createAccountWithToManyCharacters(){
 
         // Inizialisation
         NewBank test = NewBank.getBank();
@@ -71,12 +85,11 @@ class NewBankTest {
 
         String result = test.processRequest(clientId, "NEWACCOUNT 1234567890123456789012345678901");
 
-        Assertions.assertEquals("Account not created. Illegal account name", result);
-
+        assertTrue(result.equals("Account not created. Illegal account name"));
     }
 
     @Test
-    void createAccountWithIllegalCharacters(){
+    public void createAccountWithIllegalCharacters(){
 
         // Inizialisation
         NewBank test = NewBank.getBank();
@@ -86,12 +99,11 @@ class NewBankTest {
 
         String result = test.processRequest(clientId, "NEWACCOUNT SAVING!");
 
-        Assertions.assertEquals("Account not created. Illegal account name", result);
-
+        assertTrue(result.equals("Account not created. Illegal account name"));
     }
 
     @Test
-    void moveFunds(){
+    public void moveFunds(){
 
         // Inizialisation
         NewBank test = NewBank.getBank();
@@ -104,12 +116,11 @@ class NewBankTest {
 
         String result = test.processRequest(clientId, "MOVE 100 12345678 23456789");
 
-        Assertions.assertEquals("Success. 100.0 moved from 12345678 to 23456789\n\nNew Balance\n\n12345678 Current: 900.0\n23456789 Savings: 1101.0", result);
-
+        assertTrue(result.equals("Success. 100.0 moved from 12345678 to 23456789\n\nNew Balance\n\n12345678 Current: 900.0\n23456789 Savings: 1101.0"));
     }
 
     @Test
-    void makePayment(){
+    public void makePayment(){
 
         // Inizialisation
         NewBank test = NewBank.getBank();
@@ -124,7 +135,6 @@ class NewBankTest {
 
         String result = test.processRequest(clientId, "PAY 100 12345678 23456789");
 
-        Assertions.assertEquals("Success. 100.0 payed from 12345678 to 23456789\n\nNew Balance\n\n12345678 Current: 900.0", result);
-
+        assertTrue(result.equals("Success. 100.0 payed from 12345678 to 23456789\n\nNew Balance\n\n12345678 Current: 900.0"));
     }
 }
