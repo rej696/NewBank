@@ -68,7 +68,7 @@ public class NewBankTest {
 
         String result = test.processRequest(clientId, "NEWACCOUNT 1234567890123456789012345678901");
 
-        assertTrue(result.equals("Account not created. Illegal account name"));
+        assertTrue(result.equals("ERROR: Customer " + clientId.getKey() + " has no accounts"));
     }
 
     @Test

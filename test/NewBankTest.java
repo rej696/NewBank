@@ -52,7 +52,7 @@ public class NewBankTest {
         // When the account details are requested
         String result = test.processRequest(clientId, "SHOWMYACCOUNTS");
 
-        assertTrue(result.equals("Error customer has no accounts"));
+        assertTrue(result.equals("ERROR: Customer " + clientId.getKey() + " has no accounts"));
     }
 
     @Test
@@ -115,6 +115,6 @@ public class NewBankTest {
 
         String result = test.processRequest(clientId, "PAY 100 12345678 23456789");
 
-        assertTrue(result.equals("Success. 100.0 payed from 12345678 to 23456789\n\nNew Balance\n\n12345678 Current: 900.0"));
+        assertTrue(result.equals("Success. 100.0 paid from 12345678 to 23456789\n\nNew Balance\n\n12345678 Current: 900.0"));
     }
 }
