@@ -158,7 +158,7 @@ public class NewBank {
         String accounts = (customers.get(customer.getKey())).accountsToString();
 
         if (accounts == "") {
-            return "Error customer has no accounts";
+            return "ERROR: Customer " + CustomerID.getKey() + " has no accounts";
         }
         return accounts;
     }
