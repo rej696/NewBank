@@ -40,6 +40,6 @@ public class Account {
     public double getAvailableBalance() { return this.balance - this.frozenAmount; }
 
     public void setFrozenAmount(double amount) {
-        this.frozenAmount = amount;
+        this.frozenAmount += amount;
     }
 }

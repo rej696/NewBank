@@ -36,4 +36,5 @@ public class Customer {
     public ArrayList<Account> getAllAccounts() {
         return this.accounts;
     }
+
 }

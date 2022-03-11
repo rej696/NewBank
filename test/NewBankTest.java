@@ -195,4 +195,46 @@ public class NewBankTest {
         Assertions.assertEquals("Success. Loan of 500.0 offered from 12345678 for 365 days with interest of 5%", result);
         Assertions.assertEquals(500, account.getAvailableBalance());
     }
+
+    @Test
+    public void showMyOfferLoans() {
+
+        // Inizialisation
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("12345678", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID5");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        String result = test.processRequest(clientId, "OFFERLOAN 500 12345678 365 5");
+
+        Assertions.assertEquals("Success. Loan of 500.0 offered from 12345678 for 365 days with interest of 5%", result);
+        Assertions.assertEquals(500, account.getAvailableBalance());
+
+        String result2 = test.processRequest(clientId, "OFFERLOAN 500 12345678 365 5");
+
+        Assertions.assertEquals("Success. Loan of 500.0 offered from 12345678 for 365 days with interest of 5%", result2);
+        Assertions.assertEquals(0, account.getAvailableBalance());
+
+        String result3 = test.processRequest(clientId, "SHOWMYOFFEREDLOANS");
+
+        Assertions.assertEquals("Loan Number: 1, Account Number: 12345678, Amount: 500.0, Interest Rate: 5%\nLoan Number: 2, Account Number: 12345678, Amount: 500.0, Interest Rate: 5%\n", result3);
+    }
+
+    @Test
+    public void showMyOfferedLoansNoLoansOffered() {
+
+        // Inizialisation
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("12345678", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID5");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        String result3 = test.processRequest(clientId, "SHOWMYOFFEREDLOANS");
+
+        Assertions.assertEquals("No loans offered", result3);
+    }
 }

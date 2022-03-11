@@ -2,17 +2,20 @@ package newbank.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class NewBank {
 
     private static final NewBank bank = new NewBank();
     private HashMap<String, Customer> customers;
     private ArrayList<Loan> loans;
+    private int lastLoanNumber;
 
     private NewBank() {
         customers = new HashMap<>();
         loans = new ArrayList<>();
         addTestData();
+        lastLoanNumber = 0;
     }
 
     public static NewBank getBank() {
@@ -124,6 +127,9 @@ public class NewBank {
                         return offerLoan(Double.parseDouble(stringInputs[1]), stringInputs[2], Integer.parseInt(stringInputs[3]), Integer.parseInt(stringInputs[4]));
                     }
                 }
+                case "SHOWMYOFFEREDLOANS": {
+                        return showMyOfferedLoans(customer);
+                }
                 default:
                     return "FAIL";
             }
@@ -131,18 +137,33 @@ public class NewBank {
         return "FAIL";
     }
 
+    private String showMyOfferedLoans(CustomerID customerID) {
+        Customer customer = this.getCustomer(customerID);
+        String result = "";
+
+        for (Account account : customer.getAllAccounts()) {
+            for(Loan loan: loans){
+                if(loan.accountFrom.getAccountNumber().equals(account.getAccountNumber())){
+                  result = result + "Loan Number: "+ loan.number +", Account Number: "+ loan.accountFrom.getAccountNumber() +", Amount: " + loan.amount + ", Interest Rate: " + loan.interest + "%\n";
+                }
+            }
+        }
+        return result == "" ? "No loans offered" : result;
+    }
+
     private String offerLoan(double amount, String accountNumber, int term, int interest) {
         Account account = getAccount(accountNumber);
         if(account == null) {
             return "ERROR. Loan of " + amount + " cannot be offered from " + accountNumber + ". Account is non-existent.";
         }
-        if(amount > account.getBalance()) {
+        if(amount > account.getAvailableBalance()) {
             return "ERROR. Loan of " + amount + " cannot be offered from " + accountNumber + ". Loan amount exceeds funds.";
         }
         if(interest > 10 || interest < 0) {
             return "ERROR. Loan of " + amount + " cannot be offered from " + accountNumber + " with interest " + interest + "%. Interest is too high.";
         }
-        Loan newLoan = new Loan(amount, getAccount(accountNumber), term, interest);
+        this.lastLoanNumber += 1;
+        Loan newLoan = new Loan(amount, getAccount(accountNumber), term, interest, this.lastLoanNumber);
         account.setFrozenAmount(amount);
         loans.add(newLoan);
         return "Success. Loan of " + amount + " offered from " + accountNumber + " for " + term + " days with interest of " + interest + "%";
