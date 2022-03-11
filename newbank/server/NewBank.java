@@ -7,9 +7,11 @@ public class NewBank {
 
     private static final NewBank bank = new NewBank();
     private HashMap<String, Customer> customers;
+    private ArrayList<Loan> loans;
 
     private NewBank() {
         customers = new HashMap<>();
+        loans = new ArrayList<>();
         addTestData();
     }
 
@@ -117,11 +119,33 @@ public class NewBank {
                         return moveFundsBetweenAccounts(customer, Double.parseDouble(stringInputs[1]), stringInputs[2], stringInputs[3], false);
                     }
                 }
+                case "OFFERLOAN": {
+                    if (stringInputs.length > 4) {
+                        return offerLoan(Double.parseDouble(stringInputs[1]), stringInputs[2], Integer.parseInt(stringInputs[3]), Integer.parseInt(stringInputs[4]));
+                    }
+                }
                 default:
                     return "FAIL";
             }
         }
         return "FAIL";
+    }
+
+    private String offerLoan(double amount, String accountNumber, int term, int interest) {
+        Account account = getAccount(accountNumber);
+        if(account == null) {
+            return "ERROR. Loan of " + amount + " cannot be offered from " + accountNumber + ". Account is non-existent.";
+        }
+        if(amount > account.getBalance()) {
+            return "ERROR. Loan of " + amount + " cannot be offered from " + accountNumber + ". Loan amount exceeds funds.";
+        }
+        if(interest > 10 || interest < 0) {
+            return "ERROR. Loan of " + amount + " cannot be offered from " + accountNumber + " with interest " + interest + "%. Interest is too high.";
+        }
+        Loan newLoan = new Loan(amount, getAccount(accountNumber), term, interest);
+        account.setFrozenAmount(amount);
+        loans.add(newLoan);
+        return "Success. Loan of " + amount + " offered from " + accountNumber + " for " + term + " days with interest of " + interest + "%";
     }
 
     private String moveFundsBetweenAccounts(CustomerID customerID, double amount, String fromAccountNumber, String toAccountNumber, boolean accountsBelongToSameCustomer) {

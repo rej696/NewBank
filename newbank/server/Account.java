@@ -5,11 +5,13 @@ public class Account {
     private final String accountNumber;
     private final String accountName;
     private double balance;
+    private double frozenAmount;
 
     public Account(String accountNumber, String accountName, double openingBalance) {
         this.accountNumber = accountNumber;
         this.accountName = accountName;
         this.balance = openingBalance;
+        this.frozenAmount = 0;
     }
 
     public boolean credit(double amount) {
@@ -31,5 +33,13 @@ public class Account {
 
     public String getAccountNumber() {
         return accountNumber;
+    }
+
+    public double getBalance() { return this.balance; }
+
+    public double getAvailableBalance() { return this.balance - this.frozenAmount; }
+
+    public void setFrozenAmount(double amount) {
+        this.frozenAmount = amount;
     }
 }
