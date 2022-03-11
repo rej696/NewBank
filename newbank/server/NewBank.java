@@ -138,11 +138,44 @@ public class NewBank {
                 case "SHOWOPENLOANS": {
                     return showOpenLoans(customer);
                 }
+                case "ACCEPTLOAN": {
+                    if (stringInputs.length > 2) {
+                        return acceptLoan(customer, Integer.parseInt(stringInputs[1]), stringInputs[2]);
+                    }
+                }
                 default:
                     return "FAIL";
             }
         }
         return "FAIL";
+    }
+
+    private String acceptLoan(CustomerID customerID, int loanNumber, String accountTo) {
+        Customer customer = this.getCustomer(customerID);
+        Account account = customer.getAccount(accountTo);
+        if(account == null) {
+            return "Error. Invalid account number.";
+        }
+        if(!validLoanNumber(loanNumber)) {
+            return "Error. Invalid loan number.";
+        }
+        for(Loan loan: loans) {
+            if (loan.getNumber() == loanNumber) {
+                loan.setAccountTo(account);
+                account.credit(loan.getAmount());
+                return "Success. Loan number " + loan.getNumber() + " accepted by account " + loan.getAccountTo().getAccountNumber() + ".";
+            }
+        }
+        return "Error. Unable to take loan.";
+    }
+
+    private boolean validLoanNumber(int loanNumber) {
+        for(Loan loan : loans) {
+            if(loan.getNumber() == loanNumber) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String showOpenLoans(CustomerID customerID) {
@@ -151,8 +184,8 @@ public class NewBank {
 
         for (Account account : customer.getAllAccounts()) {
             for(Loan loan: loans){
-                if(!loan.accountFrom.getAccountNumber().equals(account.getAccountNumber())){
-                    result = result + "Loan Number: "+ loan.number +", Amount: " + loan.amount + ", Term: " + loan.termDays + " days, Interest Rate: " + loan.interest + "%\n";
+                if(!loan.getAccountFrom().getAccountNumber().equals(account.getAccountNumber())){
+                    result = result + "Loan Number: "+ loan.getNumber() +", Amount: " + loan.getAmount() + ", Term: " + loan.getTermDays() + " days, Interest Rate: " + loan.getInterest() + "%\n";
                 }
             }
         }
@@ -167,8 +200,8 @@ public class NewBank {
 
         for (Account account : customer.getAllAccounts()) {
             for(Loan loan: loans){
-                if(loan.accountFrom.getAccountNumber().equals(account.getAccountNumber())){
-                  result = result + "Loan Number: "+ loan.number +", Account Number: "+ loan.accountFrom.getAccountNumber() +", Amount: " + loan.amount + ", Interest Rate: " + loan.interest + "%\n";
+                if(loan.getAccountFrom().getAccountNumber().equals(account.getAccountNumber())){
+                  result = result + "Loan Number: "+ loan.getNumber() +", Account Number: "+ loan.getAccountFrom().getAccountNumber() +", Amount: " + loan.getAmount() + ", Interest Rate: " + loan.getInterest() + "%\n";
                 }
             }
         }
