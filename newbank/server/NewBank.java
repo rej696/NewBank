@@ -315,8 +315,7 @@ public class NewBank {
     }
 
     private String getHelp(){
-        String helpMsg = new String;
-        helpMsg = "\nPossible commands\n" +
+        String helpMsg = "\nPossible commands\n" +
                 "Commands must be followed by user input values between <> and separated by a space\n\n" +
                 "SHOWMYACCOUNTS\t\t\tShows all of the current customer's account details\n" +
                 "NEWACCOUNT <New account name>\t\tCreates a new account for the current customer with the specified name\n" +
