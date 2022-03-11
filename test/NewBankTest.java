@@ -126,12 +126,13 @@ public class NewBankTest {
         NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         testCustomer.addAccount(new Account("12345678", "Current", 1000));
-        CustomerID clientId = new CustomerID("TestID5");
+        CustomerID clientId = new CustomerID("TestID26");
         test.addCustomer(testCustomer, clientId.getKey());
 
         String result = test.processRequest(clientId, "OFFERLOAN 500 12345678 365 5");
 
         Assertions.assertEquals("Success. Loan of 500.0 offered from 12345678 for 365 days with interest of 5%", result);
+        test.clearLoans();
     }
 
     @Test
@@ -140,13 +141,14 @@ public class NewBankTest {
         // Inizialisation
         NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
-        testCustomer.addAccount(new Account("12345678", "Current", 1000));
-        CustomerID clientId = new CustomerID("TestID5");
+        testCustomer.addAccount(new Account("22345678", "Current", 1000));
+        CustomerID clientId = new CustomerID("TestID24");
         test.addCustomer(testCustomer, clientId.getKey());
 
-        String result = test.processRequest(clientId, "OFFERLOAN 1001 12345678 365 5");
+        String result = test.processRequest(clientId, "OFFERLOAN 1001 22345678 365 5");
 
-        Assertions.assertEquals("ERROR. Loan of 1001.0 cannot be offered from 12345678. Loan amount exceeds funds.", result);
+        Assertions.assertEquals("ERROR. Loan of 1001.0 cannot be offered from 22345678. Loan amount exceeds funds.", result);
+        test.clearLoans();
     }
 
     @Test
@@ -155,13 +157,14 @@ public class NewBankTest {
         // Inizialisation
         NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
-        testCustomer.addAccount(new Account("12345678", "Current", 1000));
-        CustomerID clientId = new CustomerID("TestID5");
+        testCustomer.addAccount(new Account("32345678", "Current", 1000));
+        CustomerID clientId = new CustomerID("TestID23");
         test.addCustomer(testCustomer, clientId.getKey());
 
-        String result = test.processRequest(clientId, "OFFERLOAN 500 12345678 365 11");
+        String result = test.processRequest(clientId, "OFFERLOAN 500 32345678 365 11");
 
-        Assertions.assertEquals("ERROR. Loan of 500.0 cannot be offered from 12345678 with interest 11%. Interest is too high.", result);
+        Assertions.assertEquals("ERROR. Loan of 500.0 cannot be offered from 32345678 with interest 11%. Interest is too high.", result);
+        test.clearLoans();
     }
 
     @Test
@@ -170,13 +173,14 @@ public class NewBankTest {
         // Inizialisation
         NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
-        testCustomer.addAccount(new Account("12345678", "Current", 1000));
-        CustomerID clientId = new CustomerID("TestID5");
+        testCustomer.addAccount(new Account("42345678", "Current", 1000));
+        CustomerID clientId = new CustomerID("TestID22");
         test.addCustomer(testCustomer, clientId.getKey());
 
         String result = test.processRequest(clientId, "OFFERLOAN 500 00000000 365 5");
 
         Assertions.assertEquals("ERROR. Loan of 500.0 cannot be offered from 00000000. Account is non-existent.", result);
+        test.clearLoans();
     }
 
     @Test
@@ -185,15 +189,16 @@ public class NewBankTest {
         // Inizialisation
         NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
-        Account account = new Account("12345678", "Current", 1000);
+        Account account = new Account("52345678", "Current", 1000);
         testCustomer.addAccount(account);
-        CustomerID clientId = new CustomerID("TestID5");
+        CustomerID clientId = new CustomerID("TestID21");
         test.addCustomer(testCustomer, clientId.getKey());
 
-        String result = test.processRequest(clientId, "OFFERLOAN 500 12345678 365 5");
+        String result = test.processRequest(clientId, "OFFERLOAN 500 52345678 365 5");
 
-        Assertions.assertEquals("Success. Loan of 500.0 offered from 12345678 for 365 days with interest of 5%", result);
+        Assertions.assertEquals("Success. Loan of 500.0 offered from 52345678 for 365 days with interest of 5%", result);
         Assertions.assertEquals(500, account.getAvailableBalance());
+        test.clearLoans();
     }
 
     @Test
@@ -202,24 +207,25 @@ public class NewBankTest {
         // Inizialisation
         NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
-        Account account = new Account("12345678", "Current", 1000);
+        Account account = new Account("62345678", "Current", 1000);
         testCustomer.addAccount(account);
-        CustomerID clientId = new CustomerID("TestID5");
+        CustomerID clientId = new CustomerID("TestID20");
         test.addCustomer(testCustomer, clientId.getKey());
 
-        String result = test.processRequest(clientId, "OFFERLOAN 500 12345678 365 5");
+        String result = test.processRequest(clientId, "OFFERLOAN 500 62345678 365 5");
 
-        Assertions.assertEquals("Success. Loan of 500.0 offered from 12345678 for 365 days with interest of 5%", result);
+        Assertions.assertEquals("Success. Loan of 500.0 offered from 62345678 for 365 days with interest of 5%", result);
         Assertions.assertEquals(500, account.getAvailableBalance());
 
-        String result2 = test.processRequest(clientId, "OFFERLOAN 500 12345678 365 5");
+        String result2 = test.processRequest(clientId, "OFFERLOAN 500 62345678 365 5");
 
-        Assertions.assertEquals("Success. Loan of 500.0 offered from 12345678 for 365 days with interest of 5%", result2);
+        Assertions.assertEquals("Success. Loan of 500.0 offered from 62345678 for 365 days with interest of 5%", result2);
         Assertions.assertEquals(0, account.getAvailableBalance());
 
         String result3 = test.processRequest(clientId, "SHOWMYOFFEREDLOANS");
 
-        Assertions.assertEquals("Loan Number: 1, Account Number: 12345678, Amount: 500.0, Interest Rate: 5%\nLoan Number: 2, Account Number: 12345678, Amount: 500.0, Interest Rate: 5%\n", result3);
+        Assertions.assertEquals("Loan Number: 1, Account Number: 62345678, Amount: 500.0, Interest Rate: 5%\nLoan Number: 2, Account Number: 62345678, Amount: 500.0, Interest Rate: 5%\n", result3);
+        test.clearLoans();
     }
 
     @Test
@@ -228,13 +234,70 @@ public class NewBankTest {
         // Inizialisation
         NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
-        Account account = new Account("12345678", "Current", 1000);
+        Account account = new Account("72345678", "Current", 1000);
         testCustomer.addAccount(account);
-        CustomerID clientId = new CustomerID("TestID5");
+        CustomerID clientId = new CustomerID("TestID11");
         test.addCustomer(testCustomer, clientId.getKey());
 
-        String result3 = test.processRequest(clientId, "SHOWMYOFFEREDLOANS");
+        String result = test.processRequest(clientId, "SHOWMYOFFEREDLOANS");
 
-        Assertions.assertEquals("No loans offered", result3);
+        Assertions.assertEquals("No loans offered", result);
+        test.clearLoans();
+    }
+
+    @Test
+    public void ShowOpenLoans() {
+
+        // Inizialisation
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("82345678", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID6");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        Customer testCustomer2 = new Customer();
+        Account account2 = new Account("23456789", "Current", 1000);
+        testCustomer2.addAccount(account2);
+        CustomerID clientId2 = new CustomerID("TestID7");
+        test.addCustomer(testCustomer2, clientId2.getKey());
+
+        String result = test.processRequest(clientId, "OFFERLOAN 500 82345678 365 5");
+
+        Assertions.assertEquals("Success. Loan of 500.0 offered from 82345678 for 365 days with interest of 5%", result);
+        Assertions.assertEquals(500, account.getAvailableBalance());
+
+        String result2 = test.processRequest(clientId, "OFFERLOAN 500 82345678 365 5");
+
+        Assertions.assertEquals("Success. Loan of 500.0 offered from 82345678 for 365 days with interest of 5%", result2);
+        Assertions.assertEquals(0, account.getAvailableBalance());
+
+        String result3 = test.processRequest(clientId2, "SHOWOPENLOANS");
+
+        Assertions.assertEquals("Loan Number: 1, Amount: 500.0, Term: 365 days, Interest Rate: 5%\nLoan Number: 2, Amount: 500.0, Term: 365 days, Interest Rate: 5%\n", result3);
+        test.clearLoans();
+    }
+
+    @Test
+    public void ShowOpenLoansNoLoansAvailable() {
+
+        // Inizialisation
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("92345678", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID9");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        Customer testCustomer2 = new Customer();
+        Account account2 = new Account("23456789", "Current", 1000);
+        testCustomer2.addAccount(account2);
+        CustomerID clientId2 = new CustomerID("TestID10");
+        test.addCustomer(testCustomer2, clientId2.getKey());
+
+        String result = test.processRequest(clientId2, "SHOWOPENLOANS");
+
+        Assertions.assertEquals("No loans available at present", result);
+        test.clearLoans();
     }
 }

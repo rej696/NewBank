@@ -22,6 +22,11 @@ public class NewBank {
         return bank;
     }
 
+    public void clearLoans(){
+        this.loans.clear();
+        lastLoanNumber = 0;
+    }
+
     public void addCustomer(Customer customer, String customerID) {
         this.customers.put(customerID, customer);
     }
@@ -130,11 +135,30 @@ public class NewBank {
                 case "SHOWMYOFFEREDLOANS": {
                         return showMyOfferedLoans(customer);
                 }
+                case "SHOWOPENLOANS": {
+                    return showOpenLoans(customer);
+                }
                 default:
                     return "FAIL";
             }
         }
         return "FAIL";
+    }
+
+    private String showOpenLoans(CustomerID customerID) {
+        Customer customer = this.getCustomer(customerID);
+        String result = "";
+
+        for (Account account : customer.getAllAccounts()) {
+            for(Loan loan: loans){
+                if(!loan.accountFrom.getAccountNumber().equals(account.getAccountNumber())){
+                    result = result + "Loan Number: "+ loan.number +", Amount: " + loan.amount + ", Term: " + loan.termDays + " days, Interest Rate: " + loan.interest + "%\n";
+                }
+            }
+        }
+
+        return result == "" ? "No loans available at present" : result;
+
     }
 
     private String showMyOfferedLoans(CustomerID customerID) {
@@ -163,9 +187,8 @@ public class NewBank {
             return "ERROR. Loan of " + amount + " cannot be offered from " + accountNumber + " with interest " + interest + "%. Interest is too high.";
         }
         this.lastLoanNumber += 1;
-        Loan newLoan = new Loan(amount, getAccount(accountNumber), term, interest, this.lastLoanNumber);
         account.setFrozenAmount(amount);
-        loans.add(newLoan);
+        loans.add(new Loan(amount, getAccount(accountNumber), term, interest, this.lastLoanNumber));
         return "Success. Loan of " + amount + " offered from " + accountNumber + " for " + term + " days with interest of " + interest + "%";
     }
 
