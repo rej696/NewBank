@@ -201,7 +201,7 @@ public class NewBank {
         for (Account account : customer.getAllAccounts()) {
             for(Loan loan: loans){
                 if(loan.getAccountFrom().getAccountNumber().equals(account.getAccountNumber())){
-                  result = result + "Loan Number: "+ loan.getNumber() +", Account Number: "+ loan.getAccountFrom().getAccountNumber() +", Amount: " + loan.getAmount() + ", Interest Rate: " + loan.getInterest() + "%\n";
+                  result = result + "Loan Number: "+ loan.getNumber() +", Account Number: "+ loan.getAccountFrom().getAccountNumber() +", Amount: " + loan.getAmount() + ", Interest Rate: " + loan.getInterest() + "%"+ (loan.getAccountTo() == null ? "" : ", Taken by: " + loan.getAccountTo().getAccountNumber()) + "\n";
                 }
             }
         }
