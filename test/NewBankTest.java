@@ -417,4 +417,26 @@ public class NewBankTest {
         Assertions.assertEquals("Loan Number: 1, Account Number: 55555555, Amount: 500.0, Interest Rate: 5%, Taken by: 55555557\n", result3);
         test.clearLoans();
     }
+
+    @Test
+    public void getHelp() {
+
+        // Inizialisation
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        testCustomer.addAccount(new Account("13579111", "Current", 1000));
+        CustomerID clientId = new CustomerID("TestID45");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        String result = test.processRequest(clientId, "HELP");
+
+        assertTrue(result.equals("\nPossible commands\n" +
+                "Commands must be followed by user input values between <> and separated by a space\n\n" +
+                "SHOWMYACCOUNTS\t\t\tShows all of the current customer's account details\n" +
+                "NEWACCOUNT <New account name>\t\tCreates a new account for the current customer with the specified name\n" +
+                "MOVE <Amount> <Debit account> <Credit account>\tMoves the amount specified between two of a customer's accounts\n" +
+                "PAY <Amount> <Debit account> <Credit account>\tPays funds from one account to another account, which may be held by another customer\n" +
+                "HELP\t\t\tShows this menu\n\n"));
+    }
+
 }

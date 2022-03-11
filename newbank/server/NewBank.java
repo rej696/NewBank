@@ -143,6 +143,9 @@ public class NewBank {
                         return acceptLoan(customer, Integer.parseInt(stringInputs[1]), stringInputs[2]);
                     }
                 }
+                case "HELP": {
+                    return getHelp();
+                }
                 default:
                     return "FAIL";
             }
@@ -309,6 +312,18 @@ public class NewBank {
 
         accountNumbers.add(numberAsString);
         return numberAsString;
+    }
+
+    private String getHelp(){
+        String helpMsg = new String;
+        helpMsg = "\nPossible commands\n" +
+                "Commands must be followed by user input values between <> and separated by a space\n\n" +
+                "SHOWMYACCOUNTS\t\t\tShows all of the current customer's account details\n" +
+                "NEWACCOUNT <New account name>\t\tCreates a new account for the current customer with the specified name\n" +
+                "MOVE <Amount> <Debit account> <Credit account>\tMoves the amount specified between two of a customer's accounts\n" +
+                "PAY <Amount> <Debit account> <Credit account>\tPays funds from one account to another account, which may be held by another customer\n" +
+                "HELP\t\t\tShows this menu\n\n";
+        return helpMsg;
     }
 
 }
