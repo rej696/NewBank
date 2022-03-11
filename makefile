@@ -11,8 +11,8 @@ build/server.PID:
 
 test: init
 	javac -classpath . -d ./test/build newbank/**/*.java
-	javac -classpath .:./test/lib/junit-4.12.jar -d ./test/build ./test/*.java
-	java -classpath ./test/lib/*:./test/build org.junit.runner.JUnitCore NewBankTest
+	javac -classpath .:./test/lib/junit-platform-console-standalone-1.8.2.jar -d ./test/build ./test/*.java
+	java -jar test/lib/junit-platform-console-standalone-1.8.2.jar --classpath test/build --scan-classpath
 
 build: init
 	javac -classpath . -d ./build newbank/**/*.java

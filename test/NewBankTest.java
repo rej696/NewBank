@@ -1,10 +1,11 @@
+package newbank.server.Testing;
+
 import newbank.server.Account;
 import newbank.server.Customer;
 import newbank.server.CustomerID;
 import newbank.server.NewBank;
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class NewBankTest {
 
@@ -22,7 +23,7 @@ public class NewBankTest {
         String result = test.processRequest(clientId, "SHOWMYACCOUNTS");
 
         // Should the response show an account name und the current balance
-        assertTrue(result.equals("12345678 Main: 1000.0\n"));
+        Assertions.assertEquals("12345678 Main: 1000.0\n", result);
     }
 
     @Test
@@ -37,7 +38,7 @@ public class NewBankTest {
         // When the account details are requested
         String result = test.processRequest(clientId, "NEWACCOUNT SAVING");
 
-        assertTrue(result.equals("Account with name SAVING was created"));
+        Assertions.assertEquals("Account with name SAVING was created", result);
     }
 
 
@@ -52,7 +53,7 @@ public class NewBankTest {
         // When the account details are requested
         String result = test.processRequest(clientId, "SHOWMYACCOUNTS");
 
-        assertTrue(result.equals("ERROR: Customer " + clientId.getKey() + " has no accounts"));
+        Assertions.assertEquals("ERROR: Customer " + clientId.getKey() + " has no accounts", result);
     }
 
     @Test
@@ -66,7 +67,7 @@ public class NewBankTest {
 
         String result = test.processRequest(clientId, "NEWACCOUNT 1234567890123456789012345678901");
 
-        assertTrue(result.equals("Account not created. Illegal account name"));
+        Assertions.assertEquals("Account not created. Illegal account name", result);
     }
 
     @Test
@@ -80,7 +81,7 @@ public class NewBankTest {
 
         String result = test.processRequest(clientId, "NEWACCOUNT SAVING!");
 
-        assertTrue(result.equals("Account not created. Illegal account name"));
+        Assertions.assertEquals("Account not created. Illegal account name", result);
     }
 
     @Test
@@ -96,7 +97,7 @@ public class NewBankTest {
 
         String result = test.processRequest(clientId, "MOVE 100 12345678 23456789");
 
-        assertTrue(result.equals("Success. 100.0 moved from 12345678 to 23456789\n\nNew Balance\n\n12345678 Current: 900.0\n23456789 Savings: 1101.0"));
+        Assertions.assertEquals("Success. 100.0 moved from 12345678 to 23456789\n\nNew Balance\n\n12345678 Current: 900.0\n23456789 Savings: 1101.0", result);
     }
 
     @Test
@@ -115,6 +116,6 @@ public class NewBankTest {
 
         String result = test.processRequest(clientId, "PAY 100 12345678 23456789");
 
-        assertTrue(result.equals("Success. 100.0 paid from 12345678 to 23456789\n\nNew Balance\n\n12345678 Current: 900.0"));
+        Assertions.assertEquals("Success. 100.0 paid from 12345678 to 23456789\n\nNew Balance\n\n12345678 Current: 900.0", result);
     }
 }
