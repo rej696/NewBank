@@ -430,13 +430,13 @@ public class NewBankTest {
 
         String result = test.processRequest(clientId, "HELP");
 
-        assertTrue(result.equals("\nPossible commands\n" +
+        Assertions.assertEquals("\nPossible commands\n" +
                 "Commands must be followed by user input values between <> and separated by a space\n\n" +
                 "SHOWMYACCOUNTS\t\t\tShows all of the current customer's account details\n" +
                 "NEWACCOUNT <New account name>\t\tCreates a new account for the current customer with the specified name\n" +
                 "MOVE <Amount> <Debit account> <Credit account>\tMoves the amount specified between two of a customer's accounts\n" +
                 "PAY <Amount> <Debit account> <Credit account>\tPays funds from one account to another account, which may be held by another customer\n" +
-                "HELP\t\t\tShows this menu\n\n"));
+                "HELP\t\t\tShows this menu\n\n", result);
     }
 
 }
