@@ -22,3 +22,18 @@ Returns SUCCESS or FAIL
 OFFERLOAN <Amount> <FromAccountX> <ToPersonY> <Interest>
 e.g. OFFERLOAN 500 Main John 0.05
 Returns SUCCESS or FAIL
+
+SHOWMYOFFEREDLOANS <Loan Number> <Account Number> <Amount> <Interest Rate>
+e.g. SHOWMYOFFEREDLOANS
+Returns: Success. Loan of 500.0 offered from 62345678 for 365 days with interest of 5%
+
+SHOWOPENLOANS <Loan Number> <Amount> <Term> <Interest Rate>
+e.g. SHOWOPENLOANS
+Returns: Success. Loan of 500.0 offered from 82345678 for 365 days with interest of 5%
+
+ACCEPTLOAN <Loan Number> <Account>
+e.g. ACCEPTLOAN 1 11111111
+Returns: Success. Loan number 1 accepted by account 11111111.
+
+
+
