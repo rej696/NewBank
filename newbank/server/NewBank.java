@@ -177,6 +177,7 @@ public class NewBank {
                 amount += loan.getAmount() / 100 * loan.getInterest();
                 accountFrom.debit(amount);
                 accountTo.credit(amount);
+                accountTo.setFrozenAmount(loan.getAmount() * -1);
                 return "Success. Loan Number: " + loan.getNumber() + ", Account Number From: " + accountFrom.getAccountNumber() + ", Account Number To: " + accountTo.getAccountNumber() + ", Amount: " + amount + "\n";
             }
         }

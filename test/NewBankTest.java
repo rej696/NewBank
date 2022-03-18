@@ -467,6 +467,10 @@ public class NewBankTest {
         String result3 = test.processRequest(clientId, "PAYBACKLOAN 1");
 
         Assertions.assertEquals("Success. Loan Number: 1, Account Number From: 55555999, Account Number To: 55555888, Amount: 525.0\n", result3);
+
+        Assertions.assertEquals(1525.00, account.getAvailableBalance());
+        Assertions.assertEquals(975.00, account2.getAvailableBalance());
+
         test.clearLoans();
     }
 
