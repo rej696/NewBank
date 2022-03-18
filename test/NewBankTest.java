@@ -438,5 +438,36 @@ public class NewBankTest {
                 "PAY <Amount> <Debit account> <Credit account>\tPays funds from one account to another account, which may be held by another customer\n" +
                 "HELP\t\t\tShows this menu\n\n", result);
     }
+    @Test
+    public void paybackLoan() {
+
+        // Inizialisation
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("55555888", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID48");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        Customer testCustomer2 = new Customer();
+        Account account2 = new Account("55555999", "Current", 1000);
+        testCustomer2.addAccount(account2);
+        CustomerID clientId2 = new CustomerID("TestID51");
+        test.addCustomer(testCustomer2, clientId2.getKey());
+
+        String result = test.processRequest(clientId, "OFFERLOAN 500 55555888 365 5");
+
+        Assertions.assertEquals("Success. Loan of 500.0 offered from 55555888 for 365 days with interest of 5%", result);
+        Assertions.assertEquals(500, account.getAvailableBalance());
+
+        String result2 = test.processRequest(clientId2, "ACCEPTLOAN 1 55555999");
+
+        Assertions.assertEquals("Success. Loan number 1 accepted by account 55555999.", result2);
+
+        String result3 = test.processRequest(clientId, "PAYBACKLOAN 1");
+
+        Assertions.assertEquals("Success. Loan Number: 1, Account Number From: 55555999, Account Number To: 55555888, Amount: 525.0\n", result3);
+        test.clearLoans();
+    }
 
 }

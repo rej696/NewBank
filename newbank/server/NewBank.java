@@ -143,6 +143,11 @@ public class NewBank {
                         return acceptLoan(customer, Integer.parseInt(stringInputs[1]), stringInputs[2]);
                     }
                 }
+                case "PAYBACKLOAN" : {
+                    if (stringInputs.length > 1) {
+                        return paybackLoan(customer, Integer.parseInt(stringInputs[1]));
+                    }
+                }
                 case "HELP": {
                     return getHelp();
                 }
@@ -151,6 +156,31 @@ public class NewBank {
             }
         }
         return "FAIL";
+    }
+
+    private String paybackLoan(CustomerID customerID, int loanNumber) {
+        Customer customer = this.getCustomer(customerID);
+        if(!validLoanNumber(loanNumber)) {
+            return "Error. Invalid loan number.";
+        }
+        for(Loan loan: loans) {
+            if (loan.getNumber() == loanNumber) {
+                Account accountTo = loan.getAccountFrom();
+                Account accountFrom = loan.getAccountTo();
+                if(accountTo == null) {
+                    return "Error. Invalid account number.";
+                }
+                if(accountFrom == null) {
+                    return "Error. Invalid account number.";
+                }
+                double amount = loan.getAmount();
+                amount += loan.getAmount() / 100 * loan.getInterest();
+                accountFrom.debit(amount);
+                accountTo.credit(amount);
+                return "Success. Loan Number: " + loan.getNumber() + ", Account Number From: " + accountFrom.getAccountNumber() + ", Account Number To: " + accountTo.getAccountNumber() + ", Amount: " + amount + "\n";
+            }
+        }
+        return "Error. Unable to payback loan.";
     }
 
     private String acceptLoan(CustomerID customerID, int loanNumber, String accountTo) {
