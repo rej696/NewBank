@@ -470,6 +470,37 @@ public class NewBankTest {
 
         Assertions.assertEquals(1525.00, account.getAvailableBalance());
         Assertions.assertEquals(975.00, account2.getAvailableBalance());
+        test.clearLoans();
+    }
+
+    @Test
+    public void invalidLoanNumberPayback() {
+
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("55555222", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID73");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        Customer testCustomer2 = new Customer();
+        Account account2 = new Account("55555111", "Current", 1000);
+        testCustomer2.addAccount(account2);
+        CustomerID clientId2 = new CustomerID("TestID94");
+        test.addCustomer(testCustomer2, clientId2.getKey());
+
+        String result = test.processRequest(clientId, "OFFERLOAN 500 55555222 365 5");
+
+        Assertions.assertEquals("Success. Loan of 500.0 offered from 55555222 for 365 days with interest of 5%", result);
+        Assertions.assertEquals(500, account.getAvailableBalance());
+
+        String result2 = test.processRequest(clientId2, "ACCEPTLOAN 1 55555111");
+
+        Assertions.assertEquals("Success. Loan number 1 accepted by account 55555111.", result2);
+
+        String result3 = test.processRequest(clientId, "PAYBACKLOAN 2");
+
+        Assertions.assertEquals("Error. Invalid loan number.", result3);
 
         test.clearLoans();
     }
