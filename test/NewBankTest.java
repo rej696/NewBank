@@ -436,6 +436,11 @@ public class NewBankTest {
                 "NEWACCOUNT <New account name>\t\tCreates a new account for the current customer with the specified name\n" +
                 "MOVE <Amount> <Debit account> <Credit account>\tMoves the amount specified between two of a customer's accounts\n" +
                 "PAY <Amount> <Debit account> <Credit account>\tPays funds from one account to another account, which may be held by another customer\n" +
+                "OFFERLOAN <Amount> <FromAccount> <Terms> <intrest>\tCreates a loan for the specified period, under the defined conditions\n" +
+                "SHOWMYOFFEREDLOANS\t\t\tShows all offered loans of the current customer\n" +
+                "SHOWOPENLOANS\t\t\tShows all open loans with the conditions of the loan.\n" +
+                "ACCEPTLOAN <Loan Number> <Account>\tThe open loan is accepted and the amount is credited to the given account.\n" +
+                "PAYBACKLOAN <Loan Number>\t\tThe loan is repaid with interest\n" +
                 "HELP\t\t\tShows this menu\n\n", result);
     }
     @Test
