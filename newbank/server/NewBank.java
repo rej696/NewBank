@@ -175,6 +175,9 @@ public class NewBank {
                 }
                 double amount = loan.getAmount();
                 amount += loan.getAmount() / 100 * loan.getInterest();
+                if(amount >= accountFrom.getAvailableBalance()) {
+                    return "Error. Insufficient funds.";
+                }
                 accountFrom.debit(amount);
                 accountTo.credit(amount);
                 accountTo.setFrozenAmount(loan.getAmount() * -1);
