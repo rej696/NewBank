@@ -35,5 +35,9 @@ ACCEPTLOAN <Loan Number> <Account>
 e.g. ACCEPTLOAN 1 11111111
 Returns: Success. Loan number 1 accepted by account 11111111.
 
+PAYBACKLOAN <Loan Number>
+e.g. PAYBACKLOAN 1
+Retruns: Success. Loan Number: 1, Account Number From: 55555999, Account Number To: 55555888, Amount: 525.0
+
 
 
