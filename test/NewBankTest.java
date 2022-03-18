@@ -438,5 +438,101 @@ public class NewBankTest {
                 "PAY <Amount> <Debit account> <Credit account>\tPays funds from one account to another account, which may be held by another customer\n" +
                 "HELP\t\t\tShows this menu\n\n", result);
     }
+    @Test
+    public void paybackLoan() {
+
+        // Inizialisation
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("55555888", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID48");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        Customer testCustomer2 = new Customer();
+        Account account2 = new Account("55555999", "Current", 1000);
+        testCustomer2.addAccount(account2);
+        CustomerID clientId2 = new CustomerID("TestID51");
+        test.addCustomer(testCustomer2, clientId2.getKey());
+
+        String result = test.processRequest(clientId, "OFFERLOAN 500 55555888 365 5");
+
+        Assertions.assertEquals("Success. Loan of 500.0 offered from 55555888 for 365 days with interest of 5%", result);
+        Assertions.assertEquals(500, account.getAvailableBalance());
+
+        String result2 = test.processRequest(clientId2, "ACCEPTLOAN 1 55555999");
+
+        Assertions.assertEquals("Success. Loan number 1 accepted by account 55555999.", result2);
+
+        String result3 = test.processRequest(clientId, "PAYBACKLOAN 1");
+
+        Assertions.assertEquals("Success. Loan Number: 1, Account Number From: 55555999, Account Number To: 55555888, Amount: 525.0\n", result3);
+
+        Assertions.assertEquals(1525.00, account.getAvailableBalance());
+        Assertions.assertEquals(975.00, account2.getAvailableBalance());
+        test.clearLoans();
+    }
+
+    @Test
+    public void invalidLoanNumberPayback() {
+
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("55555222", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID73");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        Customer testCustomer2 = new Customer();
+        Account account2 = new Account("55555111", "Current", 1000);
+        testCustomer2.addAccount(account2);
+        CustomerID clientId2 = new CustomerID("TestID94");
+        test.addCustomer(testCustomer2, clientId2.getKey());
+
+        String result = test.processRequest(clientId, "OFFERLOAN 500 55555222 365 5");
+
+        Assertions.assertEquals("Success. Loan of 500.0 offered from 55555222 for 365 days with interest of 5%", result);
+        Assertions.assertEquals(500, account.getAvailableBalance());
+
+        String result2 = test.processRequest(clientId2, "ACCEPTLOAN 1 55555111");
+
+        Assertions.assertEquals("Success. Loan number 1 accepted by account 55555111.", result2);
+
+        String result3 = test.processRequest(clientId, "PAYBACKLOAN 2");
+
+        Assertions.assertEquals("Error. Invalid loan number.", result3);
+        test.clearLoans();
+    }
+
+    @Test
+    public void insufficientFunds() {
+
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("44444222", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID98");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        Customer testCustomer2 = new Customer();
+        Account account2 = new Account("77777111", "Current", 25);
+        testCustomer2.addAccount(account2);
+        CustomerID clientId2 = new CustomerID("TestID99");
+        test.addCustomer(testCustomer2, clientId2.getKey());
+
+        String result = test.processRequest(clientId, "OFFERLOAN 500 44444222 365 5");
+
+        Assertions.assertEquals("Success. Loan of 500.0 offered from 44444222 for 365 days with interest of 5%", result);
+        Assertions.assertEquals(500, account.getAvailableBalance());
+
+        String result2 = test.processRequest(clientId2, "ACCEPTLOAN 1 77777111");
+
+        Assertions.assertEquals("Success. Loan number 1 accepted by account 77777111.", result2);
+        account2.debit(1);
+        String result3 = test.processRequest(clientId, "PAYBACKLOAN 1");
+
+        Assertions.assertEquals("Error. Insufficient funds.", result3);
+        test.clearLoans();
+    }
 
 }
