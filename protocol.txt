@@ -8,32 +8,38 @@ e.g. Main: 1000.0
 
 NEWACCOUNT <Name>
 e.g. NEWACCOUNT Savings
-Returns SUCCESS or FAIL
+Returns SUCCESS or FAIL Message
 
 MOVE <Amount> <From> <To>
-e.g. MOVE 100 Main Savings 
-Returns SUCCESS or FAIL
+e.g. MOVE 100 88888888 22222222
+Returns SUCCESS or FAIL Message
 
 PAY <Person/Company> <Ammount>
-e.g. PAY John 100
-Returns SUCCESS or FAIL
+e.g. PAY 77777777 11111111
+Returns SUCCESS or FAIL Message
 
-// Micro-loan service 
-OFFERLOAN <Amount> <FromAccountX> <ToPersonY> <Interest>
-e.g. OFFERLOAN 500 Main John 0.05
-Returns SUCCESS or FAIL
+OFFERLOAN <Amount> <Account Number> <Term> <Interest>
+e.g. OFFERLOAN 500 77777777 365 5
+Returns SUCCESS or FAIL Message
 
-SHOWMYOFFEREDLOANS <Loan Number> <Account Number> <Amount> <Interest Rate>
+SHOWMYOFFEREDLOANS
 e.g. SHOWMYOFFEREDLOANS
-Returns: Success. Loan of 500.0 offered from 62345678 for 365 days with interest of 5%
+Returns SUCCESS or FAIL Message
 
-SHOWOPENLOANS <Loan Number> <Amount> <Term> <Interest Rate>
+SHOWOPENLOANS
 e.g. SHOWOPENLOANS
-Returns: Success. Loan of 500.0 offered from 82345678 for 365 days with interest of 5%
+Returns SUCCESS or FAIL Message
 
-ACCEPTLOAN <Loan Number> <Account>
+ACCEPTLOAN <Loan Number> <Account To>
 e.g. ACCEPTLOAN 1 11111111
-Returns: Success. Loan number 1 accepted by account 11111111.
+Returns SUCCESS or FAIL Message
+
+PAYBACKLOAN <Loan Number>
+e.g. PAYBACKLOAN 1
+Returns SUCCESS or FAIL Message
+
+HELP
+
 
 
 
