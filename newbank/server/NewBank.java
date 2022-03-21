@@ -108,64 +108,94 @@ public class NewBank {
             String[] stringInputs = request.split(" ");
             String command = stringInputs[0];
 
-            switch (command) {
-                case "SHOWMYACCOUNTS":
-                    if (stringInputs.length > 1 && (stringInputs[1].equals("--help") || stringInputs[1].equals("-h"))) {
+            if (stringInputs.length == 2 && (stringInputs[1].equals("--help") || stringInputs[1].equals("-h"))) {
+                switch (command) {
+                    case "SHOWMYACCOUNTS":
                         return getHelpShowMyAccounts();
-                    } else {
-                        return showMyAccounts(customer);
+                    case "NEWACCOUNT": {
+                        return getHelpNewAccount();
                     }
-                case "NEWACCOUNT": {
-                    if (stringInputs.length > 1) {
-                        if (stringInputs[1].equals("--help") || stringInputs[1].equals("-h")) {
-                            return getHelpNewAccount();
-                        }
-                        String name = stringInputs[1];
-                        return createAccount(customer, name);
-                    }
-                }
-                case "MOVE": {
-                    if (stringInputs.length == 2 && (stringInputs[1].equals("--help") || stringInputs[1].equals("-h"))) {
+                    case "MOVE": {
                         return getHelpMove();
-                    } else if (stringInputs.length > 3) {
-                        return moveFundsBetweenAccounts(customer, Double.parseDouble(stringInputs[1]), stringInputs[2], stringInputs[3], true);
                     }
-                }
-                case "PAY": {
-                    if (stringInputs.length > 3) {
-                        return moveFundsBetweenAccounts(customer, Double.parseDouble(stringInputs[1]), stringInputs[2], stringInputs[3], false);
+                    case "PAY": {
+
                     }
-                }
-                case "OFFERLOAN": {
-                    if (stringInputs.length > 4) {
-                        return offerLoan(Double.parseDouble(stringInputs[1]), stringInputs[2], Integer.parseInt(stringInputs[3]), Integer.parseInt(stringInputs[4]));
+                    case "OFFERLOAN": {
+
                     }
+                    case "SHOWMYOFFEREDLOANS": {
+
+                    }
+                    case "SHOWOPENLOANS": {
+
+                    }
+                    case "ACCEPTLOAN": {
+
+                    }
+                    case "PAYBACKLOAN" : {
+
+                    }
+                    case "SHOWTAKENLOANS" : {
+                    }
+                    case "HELP": {
+
+                    }
+                    default:
+                        return "FAIL";
                 }
-                case "SHOWMYOFFEREDLOANS": {
+            } else {
+                switch (command) {
+                    case "SHOWMYACCOUNTS":
+                        return showMyAccounts(customer);
+                    case "NEWACCOUNT": {
+                        if (stringInputs.length > 1) {
+                            String name = stringInputs[1];
+                            return createAccount(customer, name);
+                        }
+                    }
+                    case "MOVE": {
+                        if (stringInputs.length > 3) {
+                            return moveFundsBetweenAccounts(customer, Double.parseDouble(stringInputs[1]), stringInputs[2], stringInputs[3], true);
+                        }
+                    }
+                    case "PAY": {
+                        if (stringInputs.length > 3) {
+                            return moveFundsBetweenAccounts(customer, Double.parseDouble(stringInputs[1]), stringInputs[2], stringInputs[3], false);
+                        }
+                    }
+                    case "OFFERLOAN": {
+                        if (stringInputs.length > 4) {
+                            return offerLoan(Double.parseDouble(stringInputs[1]), stringInputs[2], Integer.parseInt(stringInputs[3]), Integer.parseInt(stringInputs[4]));
+                        }
+                    }
+                    case "SHOWMYOFFEREDLOANS": {
                         return showMyOfferedLoans(customer);
-                }
-                case "SHOWOPENLOANS": {
-                    return showOpenLoans(customer);
-                }
-                case "ACCEPTLOAN": {
-                    if (stringInputs.length > 2) {
-                        return acceptLoan(customer, Integer.parseInt(stringInputs[1]), stringInputs[2]);
                     }
-                }
-                case "PAYBACKLOAN" : {
-                    if (stringInputs.length > 1) {
-                        return paybackLoan(customer, Integer.parseInt(stringInputs[1]));
+                    case "SHOWOPENLOANS": {
+                        return showOpenLoans(customer);
                     }
+                    case "ACCEPTLOAN": {
+                        if (stringInputs.length > 2) {
+                            return acceptLoan(customer, Integer.parseInt(stringInputs[1]), stringInputs[2]);
+                        }
+                    }
+                    case "PAYBACKLOAN" : {
+                        if (stringInputs.length > 1) {
+                            return paybackLoan(customer, Integer.parseInt(stringInputs[1]));
+                        }
+                    }
+                    case "SHOWTAKENLOANS" : {
+                        return showTakenLoans(customer);
+                    }
+                    case "HELP": {
+                        return getHelp();
+                    }
+                    default:
+                        return "FAIL";
                 }
-                case "SHOWTAKENLOANS" : {
-                    return showTakenLoans(customer);
-                }
-                case "HELP": {
-                    return getHelp();
-                }
-                default:
-                    return "FAIL";
             }
+
         }
         return "FAIL";
     }
