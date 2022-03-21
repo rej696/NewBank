@@ -441,7 +441,7 @@ public class NewBankTest {
                 "SHOWOPENLOANS\t\t\t\t\t\t\t\t\t\tShows all open loans with the conditions of the loan.\n" +
                 "ACCEPTLOAN <Loan Number> <Account>\t\t\t\t\tThe open loan is accepted and the amount is credited to the given account.\n" +
                 "PAYBACKLOAN <Loan Number>\t\t\t\t\t\t\tThe loan is repaid with interest\n" +
-                "SHOWTAKENLOANS\t\tShows all taken loans of the current customer\n" +
+                "SHOWTAKENLOANS\t\t\t\t\t\t\t\t\t\tShows all taken loans of the current customer\n" +
                 "HELP\t\t\t\t\t\t\t\t\t\t\t\tShows this menu\n\n", result);
     }
   
@@ -621,6 +621,7 @@ public class NewBankTest {
 
         Assertions.assertEquals("NEWACCOUNT <New account name>\t\t\t\t\t\tCreates a new account for the current customer with the specified name\n", result);
         Assertions.assertEquals("NEWACCOUNT <New account name>\t\t\t\t\t\tCreates a new account for the current customer with the specified name\n", result2);
+    }
 
     @Test
     public void getHelpMove() {
