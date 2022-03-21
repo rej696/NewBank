@@ -441,6 +441,7 @@ public class NewBankTest {
                 "SHOWOPENLOANS\t\t\tShows all open loans with the conditions of the loan.\n" +
                 "ACCEPTLOAN <Loan Number> <Account>\tThe open loan is accepted and the amount is credited to the given account.\n" +
                 "PAYBACKLOAN <Loan Number>\t\tThe loan is repaid with interest\n" +
+                "SHOWTAKENLOANS\t\tShows all taken loans of the current customer\n" +
                 "HELP\t\t\tShows this menu\n\n", result);
     }
     @Test
