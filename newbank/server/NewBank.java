@@ -148,6 +148,9 @@ public class NewBank {
                         return paybackLoan(customer, Integer.parseInt(stringInputs[1]));
                     }
                 }
+                case "SHOWTAKENLOANS" : {
+                    return showTakenLoans(customer);
+                }
                 case "HELP": {
                     return getHelp();
                 }
@@ -156,6 +159,20 @@ public class NewBank {
             }
         }
         return "FAIL";
+    }
+
+    private String showTakenLoans(CustomerID customerID) {
+        Customer customer = this.getCustomer(customerID);
+        String result = "";
+
+        for (Account account : customer.getAllAccounts()) {
+            for(Loan loan: loans){
+                if(loan.getAccountFrom().getAccountNumber().equals(account.getAccountNumber())){
+                    result = result + "Loan Number: "+ loan.getNumber() +", Account Number: "+ loan.getAccountFrom().getAccountNumber() +", Amount: " + loan.getAmount() + ", Interest Rate: " + loan.getInterest() + "%, Taken by: " + loan.getAccountTo().getAccountNumber() + "\n";
+                }
+            }
+        }
+        return result == "" ? "No loans taken" : result;
     }
 
     private String paybackLoan(CustomerID customerID, int loanNumber) {

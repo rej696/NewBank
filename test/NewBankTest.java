@@ -540,4 +540,49 @@ public class NewBankTest {
         test.clearLoans();
     }
 
-}
+    @Test
+    public void showTakenLoans() {
+        // Initialisation
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("66666666", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID100");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        Customer testCustomer2 = new Customer();
+        Account account2 = new Account("77777777", "Current", 1000);
+        testCustomer2.addAccount(account2);
+        CustomerID clientId2 = new CustomerID("TestID101");
+        test.addCustomer(testCustomer2, clientId2.getKey());
+
+        String result = test.processRequest(clientId, "OFFERLOAN 500 66666666 365 5");
+
+        Assertions.assertEquals("Success. Loan of 500.0 offered from 66666666 for 365 days with interest of 5%", result);
+        Assertions.assertEquals(500, account.getAvailableBalance());
+
+        String result2 = test.processRequest(clientId2, "ACCEPTLOAN 1 77777777");
+
+        Assertions.assertEquals("Success. Loan number 1 accepted by account 77777777.", result2);
+
+        String result3 = test.processRequest(clientId, "SHOWTAKENLOANS");
+
+        Assertions.assertEquals("Loan Number: 1, Account Number: 66666666, Amount: 500.0, Interest Rate: 5%, Taken by: 77777777\n", result3);
+        test.clearLoans();
+    }
+
+    @Test
+    public void showTakenLoansNoLoansTaken() {
+        // Initialisation
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("88888888", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID102");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        String result = test.processRequest(clientId, "SHOWTAKENLOANS");
+
+        Assertions.assertEquals("No loans taken", result);
+        test.clearLoans();
+    }}
