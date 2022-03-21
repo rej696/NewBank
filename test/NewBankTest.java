@@ -540,4 +540,57 @@ public class NewBankTest {
         test.clearLoans();
     }
 
+    @Test
+    public void getHelpShowMyAccounts() {
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("12121212", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID150");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        String result = test.processRequest(clientId, "SHOWMYACCOUNTS --help");
+        String result2 = test.processRequest(clientId, "SHOWMYACCOUNTS -h");
+
+        Assertions.assertEquals("SHOWMYACCOUNTS\t\t\t\t\t\t\t\t\t\tShows all of the current customer's account details\n", result);
+        Assertions.assertEquals("SHOWMYACCOUNTS\t\t\t\t\t\t\t\t\t\tShows all of the current customer's account details\n", result2);
+        test.clearLoans();
+    }
+
+    @Test
+    public void getHelpNewAccount() {
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("13131313", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID151");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        String result = test.processRequest(clientId, "NEWACCOUNT --help");
+        String result2 = test.processRequest(clientId, "NEWACCOUNT -h");
+
+        Assertions.assertEquals("NEWACCOUNT <New account name>\t\t\t\t\t\tCreates a new account for the current customer with the specified name\n", result);
+        Assertions.assertEquals("NEWACCOUNT <New account name>\t\t\t\t\t\tCreates a new account for the current customer with the specified name\n", result2);
+        test.clearLoans();
+    }
+
+    @Test
+    public void getHelpMove() {
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("14141414", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID152");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        String result = test.processRequest(clientId, "MOVE --help");
+        String result2 = test.processRequest(clientId, "MOVE -h");
+
+        Assertions.assertEquals("MOVE <Amount> <Debit account> <Credit account>\t\tMoves the amount specified between two of a customer's accounts\n", result);
+        Assertions.assertEquals("MOVE <Amount> <Debit account> <Credit account>\t\tMoves the amount specified between two of a customer's accounts\n", result2);
+        test.clearLoans();
+    }
+
+
+
 }

@@ -110,15 +110,24 @@ public class NewBank {
 
             switch (command) {
                 case "SHOWMYACCOUNTS":
-                    return showMyAccounts(customer);
+                    if (stringInputs.length > 1 && (stringInputs[1].equals("--help") || stringInputs[1].equals("-h"))) {
+                        return getHelpShowMyAccounts();
+                    } else {
+                        return showMyAccounts(customer);
+                    }
                 case "NEWACCOUNT": {
                     if (stringInputs.length > 1) {
+                        if (stringInputs[1].equals("--help") || stringInputs[1].equals("-h")) {
+                            return getHelpNewAccount();
+                        }
                         String name = stringInputs[1];
                         return createAccount(customer, name);
                     }
                 }
                 case "MOVE": {
-                    if (stringInputs.length > 3) {
+                    if (stringInputs.length == 2 && (stringInputs[1].equals("--help") || stringInputs[1].equals("-h"))) {
+                        return getHelpMove();
+                    } else if (stringInputs.length > 3) {
                         return moveFundsBetweenAccounts(customer, Double.parseDouble(stringInputs[1]), stringInputs[2], stringInputs[3], true);
                     }
                 }
@@ -351,9 +360,9 @@ public class NewBank {
     private String getHelp(){
         String helpMsg = "\nPossible commands\n" +
                 "Commands must be followed by user input values between <> and separated by a space\n\n" +
-                "SHOWMYACCOUNTS\t\t\t\t\t\t\t\t\t\tShows all of the current customer's account details\n" +
-                "NEWACCOUNT <New account name>\t\t\t\t\t\tCreates a new account for the current customer with the specified name\n" +
-                "MOVE <Amount> <Debit account> <Credit account>\t\tMoves the amount specified between two of a customer's accounts\n" +
+                getHelpShowMyAccounts() +
+                getHelpNewAccount() +
+                getHelpMove() +
                 "PAY <Amount> <Debit account> <Credit account>\t\tPays funds from one account to another account, which may be held by another customer\n" +
                 "OFFERLOAN <Amount> <FromAccount> <Terms> <intrest>\tCreates a loan for the specified period, under the defined conditions\n" +
                 "SHOWMYOFFEREDLOANS\t\t\t\t\t\t\t\t\tShows all offered loans of the current customer\n" +
@@ -364,4 +373,15 @@ public class NewBank {
         return helpMsg;
     }
 
+    private String getHelpShowMyAccounts() {
+        return "SHOWMYACCOUNTS\t\t\t\t\t\t\t\t\t\tShows all of the current customer's account details\n";
+    }
+
+    private String getHelpNewAccount() {
+        return "NEWACCOUNT <New account name>\t\t\t\t\t\tCreates a new account for the current customer with the specified name\n";
+    }
+
+    private String getHelpMove() {
+        return "MOVE <Amount> <Debit account> <Credit account>\t\tMoves the amount specified between two of a customer's accounts\n";
+    }
 }
