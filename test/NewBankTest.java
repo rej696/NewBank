@@ -627,7 +627,7 @@ public class NewBankTest {
     public void getHelpMove() {
         NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
-        Account account = new Account("14141414", "Current", 1000);
+        Account account = new Account("15151515", "Current", 1000);
         testCustomer.addAccount(account);
         CustomerID clientId = new CustomerID("TestID152");
         test.addCustomer(testCustomer, clientId.getKey());
@@ -637,6 +637,125 @@ public class NewBankTest {
 
         Assertions.assertEquals("MOVE <Amount> <Debit account> <Credit account>\t\tMoves the amount specified between two of a customer's accounts\n", result);
         Assertions.assertEquals("MOVE <Amount> <Debit account> <Credit account>\t\tMoves the amount specified between two of a customer's accounts\n", result2);
+        test.clearLoans();
+    }
+
+    @Test
+    public void getHelpPay() {
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("16161616", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID152");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        String result = test.processRequest(clientId, "PAY --help");
+        String result2 = test.processRequest(clientId, "PAY -h");
+
+        Assertions.assertEquals("PAY <Amount> <Debit account> <Credit account>\t\tPays funds from one account to another account, which may be held by another customer\n", result);
+        Assertions.assertEquals("PAY <Amount> <Debit account> <Credit account>\t\tPays funds from one account to another account, which may be held by another customer\n", result2);
+        test.clearLoans();
+    }
+
+    @Test
+    public void getHelpOfferLoan() {
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("17171717", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID152");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        String result = test.processRequest(clientId, "OFFERLOAN --help");
+        String result2 = test.processRequest(clientId, "OFFERLOAN -h");
+
+        Assertions.assertEquals("OFFERLOAN <Amount> <FromAccount> <Terms> <intrest>\tCreates a loan for the specified period, under the defined conditions\n", result);
+        Assertions.assertEquals("OFFERLOAN <Amount> <FromAccount> <Terms> <intrest>\tCreates a loan for the specified period, under the defined conditions\n", result2);
+        test.clearLoans();
+    }
+
+    @Test
+    public void getHelpShowMyOfferedLoans() {
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("18181818", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID152");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        String result = test.processRequest(clientId, "SHOWMYOFFEREDLOANS --help");
+        String result2 = test.processRequest(clientId, "SHOWMYOFFEREDLOANS -h");
+
+        Assertions.assertEquals("SHOWMYOFFEREDLOANS\t\t\t\t\t\t\t\t\tShows all offered loans of the current customer\n", result);
+        Assertions.assertEquals("SHOWMYOFFEREDLOANS\t\t\t\t\t\t\t\t\tShows all offered loans of the current customer\n", result2);
+        test.clearLoans();
+    }
+
+    @Test
+    public void getHelpShowOpenLoans() {
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("19191919", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID152");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        String result = test.processRequest(clientId, "SHOWOPENLOANS --help");
+        String result2 = test.processRequest(clientId, "SHOWOPENLOANS -h");
+
+        Assertions.assertEquals("SHOWOPENLOANS\t\t\t\t\t\t\t\t\t\tShows all open loans with the conditions of the loan.\n", result);
+        Assertions.assertEquals("SHOWOPENLOANS\t\t\t\t\t\t\t\t\t\tShows all open loans with the conditions of the loan.\n", result2);
+        test.clearLoans();
+    }
+
+    @Test
+    public void getHelpAcceptLoan() {
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("20202020", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID152");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        String result = test.processRequest(clientId, "ACCEPTLOAN --help");
+        String result2 = test.processRequest(clientId, "ACCEPTLOAN -h");
+
+        Assertions.assertEquals("ACCEPTLOAN <Loan Number> <Account>\t\t\t\t\tThe open loan is accepted and the amount is credited to the given account.\n", result);
+        Assertions.assertEquals("ACCEPTLOAN <Loan Number> <Account>\t\t\t\t\tThe open loan is accepted and the amount is credited to the given account.\n", result2);
+        test.clearLoans();
+    }
+
+    @Test
+    public void getHelpPayBackLoan() {
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("21212121", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID152");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        String result = test.processRequest(clientId, "PAYBACKLOAN --help");
+        String result2 = test.processRequest(clientId, "PAYBACKLOAN -h");
+
+        Assertions.assertEquals("PAYBACKLOAN <Loan Number>\t\t\t\t\t\t\tThe loan is repaid with interest\n", result);
+        Assertions.assertEquals("PAYBACKLOAN <Loan Number>\t\t\t\t\t\t\tThe loan is repaid with interest\n", result2);
+        test.clearLoans();
+    }
+
+    @Test
+    public void getHelpShowTakenLoans() {
+        NewBank test = NewBank.getBank();
+        Customer testCustomer = new Customer();
+        Account account = new Account("23232323", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID152");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        String result = test.processRequest(clientId, "SHOWTAKENLOANS --help");
+        String result2 = test.processRequest(clientId, "SHOWTAKENLOANS -h");
+
+        Assertions.assertEquals("SHOWTAKENLOANS\t\t\t\t\t\t\t\t\t\tShows all taken loans of the current customer\n", result);
+        Assertions.assertEquals("SHOWTAKENLOANS\t\t\t\t\t\t\t\t\t\tShows all taken loans of the current customer\n", result2);
         test.clearLoans();
     }
 

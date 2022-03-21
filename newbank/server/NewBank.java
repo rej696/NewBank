@@ -119,27 +119,25 @@ public class NewBank {
                         return getHelpMove();
                     }
                     case "PAY": {
-
+                        return getHelpPay();
                     }
                     case "OFFERLOAN": {
-
+                        return getHelpOfferLoan();
                     }
                     case "SHOWMYOFFEREDLOANS": {
-
+                        return getHelpShowMyOfferedLoans();
                     }
                     case "SHOWOPENLOANS": {
-
+                        return getHelpShowOpenLoans();
                     }
                     case "ACCEPTLOAN": {
-
+                        return getHelpAcceptLoan();
                     }
                     case "PAYBACKLOAN" : {
-
+                        return getHelpPayBackLoan();
                     }
                     case "SHOWTAKENLOANS" : {
-                    }
-                    case "HELP": {
-
+                        return getHelpShowTakenLoans();
                     }
                     default:
                         return "FAIL";
@@ -410,15 +408,14 @@ public class NewBank {
                 getHelpShowMyAccounts() +
                 getHelpNewAccount() +
                 getHelpMove() +
-                "PAY <Amount> <Debit account> <Credit account>\t\tPays funds from one account to another account, which may be held by another customer\n" +
-                "OFFERLOAN <Amount> <FromAccount> <Terms> <intrest>\tCreates a loan for the specified period, under the defined conditions\n" +
-                "SHOWMYOFFEREDLOANS\t\t\t\t\t\t\t\t\tShows all offered loans of the current customer\n" +
-                "SHOWOPENLOANS\t\t\t\t\t\t\t\t\t\tShows all open loans with the conditions of the loan.\n" +
-                "ACCEPTLOAN <Loan Number> <Account>\t\t\t\t\tThe open loan is accepted and the amount is credited to the given account.\n" +
-                "PAYBACKLOAN <Loan Number>\t\t\t\t\t\t\tThe loan is repaid with interest\n" +
-                "SHOWTAKENLOANS\t\t\t\t\t\t\t\t\t\tShows all taken loans of the current customer\n" +
+                getHelpPay() +
+                getHelpOfferLoan() +
+                getHelpShowMyOfferedLoans() +
+                getHelpShowOpenLoans() +
+                getHelpAcceptLoan() +
+                getHelpPayBackLoan() +
+                getHelpShowTakenLoans() +
                 "HELP\t\t\t\t\t\t\t\t\t\t\t\tShows this menu\n\n";
-
         return helpMsg;
     }
 
@@ -432,5 +429,33 @@ public class NewBank {
 
     private String getHelpMove() {
         return "MOVE <Amount> <Debit account> <Credit account>\t\tMoves the amount specified between two of a customer's accounts\n";
+    }
+
+    private String getHelpPay() {
+        return "PAY <Amount> <Debit account> <Credit account>\t\tPays funds from one account to another account, which may be held by another customer\n";
+    }
+
+    private String getHelpOfferLoan() {
+        return "OFFERLOAN <Amount> <FromAccount> <Terms> <intrest>\tCreates a loan for the specified period, under the defined conditions\n";
+    }
+
+    private String getHelpShowMyOfferedLoans() {
+        return "SHOWMYOFFEREDLOANS\t\t\t\t\t\t\t\t\tShows all offered loans of the current customer\n";
+    }
+
+    private String getHelpShowOpenLoans() {
+        return "SHOWOPENLOANS\t\t\t\t\t\t\t\t\t\tShows all open loans with the conditions of the loan.\n";
+    }
+
+    private String getHelpAcceptLoan() {
+        return "ACCEPTLOAN <Loan Number> <Account>\t\t\t\t\tThe open loan is accepted and the amount is credited to the given account.\n";
+    }
+
+    private String getHelpPayBackLoan() {
+        return "PAYBACKLOAN <Loan Number>\t\t\t\t\t\t\tThe loan is repaid with interest\n";
+    }
+
+    private String getHelpShowTakenLoans() {
+        return "SHOWTAKENLOANS\t\t\t\t\t\t\t\t\t\tShows all taken loans of the current customer\n";
     }
 }
