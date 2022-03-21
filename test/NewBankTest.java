@@ -566,7 +566,7 @@ public class NewBankTest {
 
         Assertions.assertEquals("Success. Loan number 1 accepted by account 77777777.", result2);
 
-        String result3 = test.processRequest(clientId, "SHOWTAKENLOANS");
+        String result3 = test.processRequest(clientId2, "SHOWTAKENLOANS");
 
         Assertions.assertEquals("Loan Number: 1, Account Number: 66666666, Amount: 500.0, Interest Rate: 5%, Taken by: 77777777\n", result3);
         test.clearLoans();

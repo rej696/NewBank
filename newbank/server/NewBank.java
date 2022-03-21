@@ -167,7 +167,7 @@ public class NewBank {
 
         for (Account account : customer.getAllAccounts()) {
             for(Loan loan: loans){
-                if(loan.getAccountFrom().getAccountNumber().equals(account.getAccountNumber())){
+                if(loan.getAccountTo().getAccountNumber().equals(account.getAccountNumber())){
                     result = result + "Loan Number: "+ loan.getNumber() +", Account Number: "+ loan.getAccountFrom().getAccountNumber() +", Amount: " + loan.getAmount() + ", Interest Rate: " + loan.getInterest() + "%, Taken by: " + loan.getAccountTo().getAccountNumber() + "\n";
                 }
             }
