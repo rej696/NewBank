@@ -157,6 +157,9 @@ public class NewBank {
                         return paybackLoan(customer, Integer.parseInt(stringInputs[1]));
                     }
                 }
+                case "SHOWTAKENLOANS" : {
+                    return showTakenLoans(customer);
+                }
                 case "HELP": {
                     return getHelp();
                 }
@@ -165,6 +168,20 @@ public class NewBank {
             }
         }
         return "FAIL";
+    }
+
+    private String showTakenLoans(CustomerID customerID) {
+        Customer customer = this.getCustomer(customerID);
+        String result = "";
+
+        for (Account account : customer.getAllAccounts()) {
+            for(Loan loan: loans){
+                if(loan.getAccountTo() != null && loan.getAccountTo().getAccountNumber().equals(account.getAccountNumber())){
+                    result = result + "Loan Number: "+ loan.getNumber() +", Account Number: "+ loan.getAccountFrom().getAccountNumber() +", Amount: " + loan.getAmount() + ", Interest Rate: " + loan.getInterest() + "%, Taken by: " + loan.getAccountTo().getAccountNumber() + "\n";
+                }
+            }
+        }
+        return result == "" ? "No loans taken" : result;
     }
 
     private String paybackLoan(CustomerID customerID, int loanNumber) {
@@ -369,7 +386,9 @@ public class NewBank {
                 "SHOWOPENLOANS\t\t\t\t\t\t\t\t\t\tShows all open loans with the conditions of the loan.\n" +
                 "ACCEPTLOAN <Loan Number> <Account>\t\t\t\t\tThe open loan is accepted and the amount is credited to the given account.\n" +
                 "PAYBACKLOAN <Loan Number>\t\t\t\t\t\t\tThe loan is repaid with interest\n" +
+                "SHOWTAKENLOANS\t\t\t\t\t\t\t\t\t\tShows all taken loans of the current customer\n" +
                 "HELP\t\t\t\t\t\t\t\t\t\t\t\tShows this menu\n\n";
+
         return helpMsg;
     }
 
