@@ -1,5 +1,7 @@
 package newbank.server;
 
+import newbank.client.ExampleClient;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,8 +15,12 @@ public class NewBankServer extends Thread {
     }
 
     public static void main(String[] args) throws IOException {
-        // starts a new NewBankServer thread on a specified port number
-        new NewBankServer(14002).start();
+        if (args.length >= 1) {
+            new NewBankServer(Integer.parseInt(args[0])).start();
+        } else {
+            // starts a new NewBankServer thread on a specified port number
+            new NewBankServer(14002).start();
+        }
     }
 
     public void run() {
