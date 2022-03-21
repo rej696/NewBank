@@ -1,7 +1,5 @@
 package newbank.client;
 
-import newbank.server.NewBank;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,13 +14,10 @@ public class ExampleClient extends Thread {
     private final BufferedReader userInput;
     private final Thread bankServerResponceThread;
 
-    public ExampleClient(String ip, int port, boolean help) throws IOException {
+    public ExampleClient(String ip, int port) throws IOException {
         server = new Socket(ip, port);
         userInput = new BufferedReader(new InputStreamReader(System.in));
         bankServerOut = new PrintWriter(server.getOutputStream(), true);
-        if(help) {
-            System.out.println(NewBank.getHelp());
-        }
 
         bankServerResponceThread = new Thread() {
             private final BufferedReader bankServerIn = new BufferedReader(new InputStreamReader(server.getInputStream()));
@@ -44,19 +39,9 @@ public class ExampleClient extends Thread {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         if (args.length >= 2) {
-            if(args[2].equals("--help") || args[2].equals("-h")) {
-                new ExampleClient(args[0], Integer.parseInt(args[1]), true).start();
-            } else {
-                new ExampleClient(args[0], Integer.parseInt(args[1]), false).start();
-            }
-        } else if (args.length >= 1) {
-            if(args[0].equals("--help") || args[0].equals("-h")) {
-                new ExampleClient("localhost", 14002, true).start();
-            } else {
-                new ExampleClient("localhost", 14002, false).start();
-            }
+            new ExampleClient(args[0], Integer.parseInt(args[1])).start();
         } else {
-            new ExampleClient("localhost", 14002, false).start();
+            new ExampleClient("localhost", 14002).start();
         }
     }
 

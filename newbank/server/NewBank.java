@@ -348,7 +348,7 @@ public class NewBank {
         return numberAsString;
     }
 
-    public static String getHelp(){
+    private String getHelp(){
         String helpMsg = "\nPossible commands\n" +
                 "Commands must be followed by user input values between <> and separated by a space\n\n" +
                 "SHOWMYACCOUNTS\t\t\t\t\t\t\t\t\t\tShows all of the current customer's account details\n" +
