@@ -49,12 +49,14 @@ public class ExampleClient extends Thread {
             } else {
                 new ExampleClient(args[0], Integer.parseInt(args[1]), false).start();
             }
-        } else {
+        } else if (args.length >= 1) {
             if(args[0].equals("--help") || args[0].equals("-h")) {
                 new ExampleClient("localhost", 14002, true).start();
             } else {
                 new ExampleClient("localhost", 14002, false).start();
             }
+        } else {
+            new ExampleClient("localhost", 14002, false).start();
         }
     }
 
