@@ -108,55 +108,92 @@ public class NewBank {
             String[] stringInputs = request.split(" ");
             String command = stringInputs[0];
 
-            switch (command) {
-                case "SHOWMYACCOUNTS":
-                    return showMyAccounts(customer);
-                case "NEWACCOUNT": {
-                    if (stringInputs.length > 1) {
-                        String name = stringInputs[1];
-                        return createAccount(customer, name);
+            if (stringInputs.length == 2 && (stringInputs[1].equals("--help") || stringInputs[1].equals("-h"))) {
+                switch (command) {
+                    case "SHOWMYACCOUNTS":
+                        return getHelpShowMyAccounts();
+                    case "NEWACCOUNT": {
+                        return getHelpNewAccount();
                     }
-                }
-                case "MOVE": {
-                    if (stringInputs.length > 3) {
-                        return moveFundsBetweenAccounts(customer, Double.parseDouble(stringInputs[1]), stringInputs[2], stringInputs[3], true);
+                    case "MOVE": {
+                        return getHelpMove();
                     }
-                }
-                case "PAY": {
-                    if (stringInputs.length > 3) {
-                        return moveFundsBetweenAccounts(customer, Double.parseDouble(stringInputs[1]), stringInputs[2], stringInputs[3], false);
+                    case "PAY": {
+                        return getHelpPay();
                     }
-                }
-                case "OFFERLOAN": {
-                    if (stringInputs.length > 4) {
-                        return offerLoan(Double.parseDouble(stringInputs[1]), stringInputs[2], Integer.parseInt(stringInputs[3]), Integer.parseInt(stringInputs[4]));
+                    case "OFFERLOAN": {
+                        return getHelpOfferLoan();
                     }
+                    case "SHOWMYOFFEREDLOANS": {
+                        return getHelpShowMyOfferedLoans();
+                    }
+                    case "SHOWOPENLOANS": {
+                        return getHelpShowOpenLoans();
+                    }
+                    case "ACCEPTLOAN": {
+                        return getHelpAcceptLoan();
+                    }
+                    case "PAYBACKLOAN" : {
+                        return getHelpPayBackLoan();
+                    }
+                    case "SHOWTAKENLOANS" : {
+                        return getHelpShowTakenLoans();
+                    }
+                    default:
+                        return "FAIL";
                 }
-                case "SHOWMYOFFEREDLOANS": {
+            } else {
+                switch (command) {
+                    case "SHOWMYACCOUNTS":
+                        return showMyAccounts(customer);
+                    case "NEWACCOUNT": {
+                        if (stringInputs.length > 1) {
+                            String name = stringInputs[1];
+                            return createAccount(customer, name);
+                        }
+                    }
+                    case "MOVE": {
+                        if (stringInputs.length > 3) {
+                            return moveFundsBetweenAccounts(customer, Double.parseDouble(stringInputs[1]), stringInputs[2], stringInputs[3], true);
+                        }
+                    }
+                    case "PAY": {
+                        if (stringInputs.length > 3) {
+                            return moveFundsBetweenAccounts(customer, Double.parseDouble(stringInputs[1]), stringInputs[2], stringInputs[3], false);
+                        }
+                    }
+                    case "OFFERLOAN": {
+                        if (stringInputs.length > 4) {
+                            return offerLoan(Double.parseDouble(stringInputs[1]), stringInputs[2], Integer.parseInt(stringInputs[3]), Integer.parseInt(stringInputs[4]));
+                        }
+                    }
+                    case "SHOWMYOFFEREDLOANS": {
                         return showMyOfferedLoans(customer);
-                }
-                case "SHOWOPENLOANS": {
-                    return showOpenLoans(customer);
-                }
-                case "ACCEPTLOAN": {
-                    if (stringInputs.length > 2) {
-                        return acceptLoan(customer, Integer.parseInt(stringInputs[1]), stringInputs[2]);
                     }
-                }
-                case "PAYBACKLOAN" : {
-                    if (stringInputs.length > 1) {
-                        return paybackLoan(customer, Integer.parseInt(stringInputs[1]));
+                    case "SHOWOPENLOANS": {
+                        return showOpenLoans(customer);
                     }
+                    case "ACCEPTLOAN": {
+                        if (stringInputs.length > 2) {
+                            return acceptLoan(customer, Integer.parseInt(stringInputs[1]), stringInputs[2]);
+                        }
+                    }
+                    case "PAYBACKLOAN" : {
+                        if (stringInputs.length > 1) {
+                            return paybackLoan(customer, Integer.parseInt(stringInputs[1]));
+                        }
+                    }
+                    case "SHOWTAKENLOANS" : {
+                        return showTakenLoans(customer);
+                    }
+                    case "HELP": {
+                        return getHelp();
+                    }
+                    default:
+                        return "FAIL";
                 }
-                case "SHOWTAKENLOANS" : {
-                    return showTakenLoans(customer);
-                }
-                case "HELP": {
-                    return getHelp();
-                }
-                default:
-                    return "FAIL";
             }
+
         }
         return "FAIL";
     }
@@ -368,18 +405,57 @@ public class NewBank {
     private String getHelp(){
         String helpMsg = "\nPossible commands\n" +
                 "Commands must be followed by user input values between <> and separated by a space\n\n" +
-                "SHOWMYACCOUNTS\t\t\tShows all of the current customer's account details\n" +
-                "NEWACCOUNT <New account name>\t\tCreates a new account for the current customer with the specified name\n" +
-                "MOVE <Amount> <Debit account> <Credit account>\tMoves the amount specified between two of a customer's accounts\n" +
-                "PAY <Amount> <Debit account> <Credit account>\tPays funds from one account to another account, which may be held by another customer\n" +
-                "OFFERLOAN <Amount> <FromAccount> <Terms> <intrest>\tCreates a loan for the specified period, under the defined conditions\n" +
-                "SHOWMYOFFEREDLOANS\t\t\tShows all offered loans of the current customer\n" +
-                "SHOWOPENLOANS\t\t\tShows all open loans with the conditions of the loan.\n" +
-                "ACCEPTLOAN <Loan Number> <Account>\tThe open loan is accepted and the amount is credited to the given account.\n" +
-                "PAYBACKLOAN <Loan Number>\t\tThe loan is repaid with interest\n" +
-                "SHOWTAKENLOANS\t\tShows all taken loans of the current customer\n" +
-                "HELP\t\t\tShows this menu\n\n";
+                getHelpShowMyAccounts() +
+                getHelpNewAccount() +
+                getHelpMove() +
+                getHelpPay() +
+                getHelpOfferLoan() +
+                getHelpShowMyOfferedLoans() +
+                getHelpShowOpenLoans() +
+                getHelpAcceptLoan() +
+                getHelpPayBackLoan() +
+                getHelpShowTakenLoans() +
+                "HELP\t\t\t\t\t\t\t\t\t\t\t\tShows this menu\n\n";
         return helpMsg;
     }
 
+    private String getHelpShowMyAccounts() {
+        return "SHOWMYACCOUNTS\t\t\t\t\t\t\t\t\t\tShows all of the current customer's account details\n";
+    }
+
+    private String getHelpNewAccount() {
+        return "NEWACCOUNT <New account name>\t\t\t\t\t\tCreates a new account for the current customer with the specified name\n";
+    }
+
+    private String getHelpMove() {
+        return "MOVE <Amount> <Debit account> <Credit account>\t\tMoves the amount specified between two of a customer's accounts\n";
+    }
+
+    private String getHelpPay() {
+        return "PAY <Amount> <Debit account> <Credit account>\t\tPays funds from one account to another account, which may be held by another customer\n";
+    }
+
+    private String getHelpOfferLoan() {
+        return "OFFERLOAN <Amount> <FromAccount> <Terms> <intrest>\tCreates a loan for the specified period, under the defined conditions\n";
+    }
+
+    private String getHelpShowMyOfferedLoans() {
+        return "SHOWMYOFFEREDLOANS\t\t\t\t\t\t\t\t\tShows all offered loans of the current customer\n";
+    }
+
+    private String getHelpShowOpenLoans() {
+        return "SHOWOPENLOANS\t\t\t\t\t\t\t\t\t\tShows all open loans with the conditions of the loan.\n";
+    }
+
+    private String getHelpAcceptLoan() {
+        return "ACCEPTLOAN <Loan Number> <Account>\t\t\t\t\tThe open loan is accepted and the amount is credited to the given account.\n";
+    }
+
+    private String getHelpPayBackLoan() {
+        return "PAYBACKLOAN <Loan Number>\t\t\t\t\t\t\tThe loan is repaid with interest\n";
+    }
+
+    private String getHelpShowTakenLoans() {
+        return "SHOWTAKENLOANS\t\t\t\t\t\t\t\t\t\tShows all taken loans of the current customer\n";
+    }
 }
