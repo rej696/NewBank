@@ -14,7 +14,7 @@ MOVE <Amount> <From> <To>
 e.g. MOVE 100 88888888 22222222
 Returns SUCCESS or FAIL Message
 
-PAY <Person/Company> <Ammount>
+PAY <Person/Company> <Amount>
 e.g. PAY 77777777 11111111
 Returns SUCCESS or FAIL Message
 
@@ -39,7 +39,19 @@ e.g. PAYBACKLOAN 1
 Returns SUCCESS or FAIL Message
 
 HELP
+Shows the following list of possible HELP commands
+Note: Commands must be followed by user input values between <> and separated by a space
 
+SHOWMYACCOUNTS										Shows all of the current customer's account details
+NEWACCOUNT <New account name>						Creates a new account for the current customer with the specified name
+MOVE <Amount> <Debit account> <Credit account>		Moves the amount specified between two of a customer's accounts
+PAY <Amount> <Debit account> <Credit account>		Pays funds from one account to another account, which may be held by another customer
+OFFERLOAN <Amount> <FromAccount> <Terms> <intrest>	Creates a loan for the specified period, under the defined conditions
+SHOWMYOFFEREDLOANS									Shows all offered loans of the current customer
+SHOWOPENLOANS										Shows all open loans with the conditions of the loan.
+ACCEPTLOAN <Loan Number> <Account>					The open loan is accepted and the amount is credited to the given account.
+PAYBACKLOAN <Loan Number>							The loan is repaid with interest
+SHOWTAKENLOANS										Shows all taken loans of the current customer
 
 
 
