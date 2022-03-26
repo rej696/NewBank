@@ -706,5 +706,18 @@ public class NewBankTest {
         Assertions.assertEquals("SHOWTAKENLOANS\t\t\t\t\t\t\t\t\t\tShows all taken loans of the current customer\n", result2);
     }
 
+    @Test
+    public void speedTest() {
+        Customer testCustomer = new Customer();
+        Account account = new Account("23232323", "Current", 1000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID152");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        for (int i=0; i<500; i++) {
+            test.processRequest(clientId, "OFFERLOAN 1 12345678 365 5");
+        }
+    }
+
 }
 
