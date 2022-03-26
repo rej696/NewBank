@@ -142,6 +142,9 @@ public class NewBank implements NewBankQuery_I{
                     case "PAYBACKLOAN" : {
                         return getHelpPayBackLoan();
                     }
+                    case "PARTPAYBACKLOAN" : {
+                        return getHelpPartPayBackLoan();
+                    }
                     case "SHOWTAKENLOANS" : {
                         return getHelpShowTakenLoans();
                     }
@@ -188,6 +191,11 @@ public class NewBank implements NewBankQuery_I{
                         if (stringInputs.length > 1) {
                             return loanManager.paybackLoan(customer, Integer.parseInt(stringInputs[1]));
                         }
+                    }
+                    case "PARTPAYBACKLOAN" : {
+                        if (stringInputs.length > 2) {
+                            return loanManager.paybackLoanPartial(customer, Integer.parseInt(stringInputs[1]), Double.parseDouble(stringInputs[2]));
+                        }                        
                     }
                     case "SHOWTAKENLOANS" : {
                         return loanManager.showTakenLoans(customer);
@@ -332,6 +340,10 @@ public class NewBank implements NewBankQuery_I{
 
     private String getHelpPayBackLoan() {
         return "PAYBACKLOAN <Loan Number>\t\t\t\t\t\t\tThe loan is repaid with interest\n";
+    }
+
+    private String getHelpPartPayBackLoan() {
+        return "PARTPAYBACKLOAN <Loan Number> <Amount>\t\t\t\t\t\t\tThe amount is paid off the loan balance\n";
     }
 
     private String getHelpShowTakenLoans() {
