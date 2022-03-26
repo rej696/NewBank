@@ -1,19 +1,39 @@
-package newbank.server.Testing;
+package test;
 
 import newbank.server.Account;
 import newbank.server.Customer;
 import newbank.server.CustomerID;
+import newbank.server.Loan;
 import newbank.server.NewBank;
+import java.time.LocalDate;
+import java.util.function.Supplier;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class NewBankTest {
+    private NewBank test = NewBank.getBank();
+    private StubLocalDate currentTime;
+
+    public void setCurrentTime(LocalDate date) {
+        currentTime.set(date);
+        Loan.currentTime = (Supplier<LocalDate>) currentTime;
+    }
+    
+    @BeforeEach
+    public void setUp() {
+        currentTime = new StubLocalDate(LocalDate.of(1996, 3, 6));
+        Loan.currentTime = (Supplier<LocalDate>) currentTime;
+    }
+
+    @AfterEach
+    public void tearDown() {
+        test.clearLoans();
+    }
 
     @Test
     public void showAccounts() {
-        // Inizialisation
-        NewBank test = NewBank.getBank();
-
         Customer testCustomer = new Customer();
         testCustomer.addAccount(new Account("12345678", "Main", 1000));
         CustomerID clientId = new CustomerID("TestID1");
@@ -28,8 +48,6 @@ public class NewBankTest {
 
     @Test
     public void createAccounts() {
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         testCustomer.addAccount(new Account("12345678", "Main", 1000));
         CustomerID clientId = new CustomerID("TestID1");
@@ -44,8 +62,6 @@ public class NewBankTest {
 
     @Test
     public void showAccountsNoAccount() {
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         CustomerID clientId = new CustomerID("TestID2");
         test.addCustomer(testCustomer, clientId.getKey());
@@ -58,9 +74,6 @@ public class NewBankTest {
 
     @Test
     public void createAccountWithToManyCharacters() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         CustomerID clientId = new CustomerID("TestID3");
         test.addCustomer(testCustomer, clientId.getKey());
@@ -72,9 +85,6 @@ public class NewBankTest {
 
     @Test
     public void createAccountWithIllegalCharacters() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         CustomerID clientId = new CustomerID("TestID3");
         test.addCustomer(testCustomer, clientId.getKey());
@@ -86,9 +96,6 @@ public class NewBankTest {
 
     @Test
     public void moveFunds() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         testCustomer.addAccount(new Account("12345678", "Current", 1000));
         testCustomer.addAccount(new Account("23456789", "Savings", 1001));
@@ -102,9 +109,6 @@ public class NewBankTest {
 
     @Test
     public void makePayment() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         testCustomer.addAccount(new Account("12345678", "Current", 1000));
         CustomerID clientId = new CustomerID("TestID5");
@@ -121,9 +125,6 @@ public class NewBankTest {
 
     @Test
     public void offerLoan() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         testCustomer.addAccount(new Account("12345678", "Current", 1000));
         CustomerID clientId = new CustomerID("TestID26");
@@ -132,14 +133,10 @@ public class NewBankTest {
         String result = test.processRequest(clientId, "OFFERLOAN 500 12345678 365 5");
 
         Assertions.assertEquals("Success. Loan of 500.0 offered from 12345678 for 365 days with interest of 5%", result);
-        test.clearLoans();
     }
 
     @Test
     public void offerLoanInsufficientFunds() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         testCustomer.addAccount(new Account("22345678", "Current", 1000));
         CustomerID clientId = new CustomerID("TestID24");
@@ -148,14 +145,10 @@ public class NewBankTest {
         String result = test.processRequest(clientId, "OFFERLOAN 1001 22345678 365 5");
 
         Assertions.assertEquals("ERROR. Loan of 1001.0 cannot be offered from 22345678. Loan amount exceeds funds.", result);
-        test.clearLoans();
     }
 
     @Test
     public void offerLoanInterestNotInRange() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         testCustomer.addAccount(new Account("32345678", "Current", 1000));
         CustomerID clientId = new CustomerID("TestID23");
@@ -164,14 +157,10 @@ public class NewBankTest {
         String result = test.processRequest(clientId, "OFFERLOAN 500 32345678 365 11");
 
         Assertions.assertEquals("ERROR. Loan of 500.0 cannot be offered from 32345678 with interest 11%. Interest is too high.", result);
-        test.clearLoans();
     }
 
     @Test
     public void offerLoanNotExistingAccountNumber() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         testCustomer.addAccount(new Account("42345678", "Current", 1000));
         CustomerID clientId = new CustomerID("TestID22");
@@ -180,14 +169,10 @@ public class NewBankTest {
         String result = test.processRequest(clientId, "OFFERLOAN 500 00000000 365 5");
 
         Assertions.assertEquals("ERROR. Loan of 500.0 cannot be offered from 00000000. Account is non-existent.", result);
-        test.clearLoans();
     }
 
     @Test
     public void offerLoanFreezeLoanAmount() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("52345678", "Current", 1000);
         testCustomer.addAccount(account);
@@ -198,14 +183,10 @@ public class NewBankTest {
 
         Assertions.assertEquals("Success. Loan of 500.0 offered from 52345678 for 365 days with interest of 5%", result);
         Assertions.assertEquals(500, account.getAvailableBalance());
-        test.clearLoans();
     }
 
     @Test
     public void showMyOfferLoans() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("62345678", "Current", 1000);
         testCustomer.addAccount(account);
@@ -225,14 +206,10 @@ public class NewBankTest {
         String result3 = test.processRequest(clientId, "SHOWMYOFFEREDLOANS");
 
         Assertions.assertEquals("Loan Number: 1, Account Number: 62345678, Amount: 500.0, Interest Rate: 5%\nLoan Number: 2, Account Number: 62345678, Amount: 500.0, Interest Rate: 5%\n", result3);
-        test.clearLoans();
     }
 
     @Test
     public void showMyOfferedLoansNoLoansOffered() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("72345678", "Current", 1000);
         testCustomer.addAccount(account);
@@ -242,14 +219,10 @@ public class NewBankTest {
         String result = test.processRequest(clientId, "SHOWMYOFFEREDLOANS");
 
         Assertions.assertEquals("No loans offered", result);
-        test.clearLoans();
     }
 
     @Test
     public void ShowOpenLoans() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("82345678", "Current", 1000);
         testCustomer.addAccount(account);
@@ -275,14 +248,10 @@ public class NewBankTest {
         String result3 = test.processRequest(clientId2, "SHOWOPENLOANS");
 
         Assertions.assertEquals("Loan Number: 1, Amount: 500.0, Term: 365 days, Interest Rate: 5%\nLoan Number: 2, Amount: 500.0, Term: 365 days, Interest Rate: 5%\n", result3);
-        test.clearLoans();
     }
 
     @Test
     public void ShowOpenLoansNoLoansAvailable() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("92345678", "Current", 1000);
         testCustomer.addAccount(account);
@@ -298,14 +267,10 @@ public class NewBankTest {
         String result = test.processRequest(clientId2, "SHOWOPENLOANS");
 
         Assertions.assertEquals("No loans available at present", result);
-        test.clearLoans();
     }
 
     @Test
     public void acceptLoan() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("02345678", "Current", 1000);
         testCustomer.addAccount(account);
@@ -327,14 +292,10 @@ public class NewBankTest {
 
         Assertions.assertEquals("Success. Loan number 1 accepted by account 11111111.", result2);
         Assertions.assertEquals(1500, account2.getAvailableBalance());
-        test.clearLoans();
     }
 
     @Test
     public void acceptLoanInvalidLoanNumber() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("00000000", "Current", 1000);
         testCustomer.addAccount(account);
@@ -355,14 +316,10 @@ public class NewBankTest {
         String result2 = test.processRequest(clientId2, "ACCEPTLOAN 2 22222222");
 
         Assertions.assertEquals("Error. Invalid loan number.", result2);
-        test.clearLoans();
     }
 
     @Test
     public void acceptLoanInvalidAccountNumber() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("33333333", "Current", 1000);
         testCustomer.addAccount(account);
@@ -383,14 +340,10 @@ public class NewBankTest {
         String result2 = test.processRequest(clientId2, "ACCEPTLOAN 1 00");
 
         Assertions.assertEquals("Error. Invalid account number.", result2);
-        test.clearLoans();
     }
 
     @Test
     public void showMyOfferedAndAcceptedLoans() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("55555555", "Current", 1000);
         testCustomer.addAccount(account);
@@ -415,14 +368,10 @@ public class NewBankTest {
         String result3 = test.processRequest(clientId, "SHOWMYOFFEREDLOANS");
 
         Assertions.assertEquals("Loan Number: 1, Account Number: 55555555, Amount: 500.0, Interest Rate: 5%, Taken by: 55555557\n", result3);
-        test.clearLoans();
     }
 
     @Test
     public void getHelp() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         testCustomer.addAccount(new Account("13579111", "Current", 1000));
         CustomerID clientId = new CustomerID("TestID45");
@@ -447,9 +396,6 @@ public class NewBankTest {
   
     @Test
     public void paybackLoan() {
-
-        // Inizialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("55555888", "Current", 1000);
         testCustomer.addAccount(account);
@@ -471,19 +417,18 @@ public class NewBankTest {
 
         Assertions.assertEquals("Success. Loan number 1 accepted by account 55555999.", result2);
 
+        setCurrentTime(LocalDate.of(1996, 3, 14));
+
         String result3 = test.processRequest(clientId, "PAYBACKLOAN 1");
 
-        Assertions.assertEquals("Success. Loan Number: 1, Account Number From: 55555999, Account Number To: 55555888, Amount: 525.0\n", result3);
+        Assertions.assertEquals("Success. Loan Number: 1, Account Number From: 55555999, Account Number To: 55555888, Amount: 500.55\n", result3);
 
-        Assertions.assertEquals(1525.00, account.getAvailableBalance());
-        Assertions.assertEquals(975.00, account2.getAvailableBalance());
-        test.clearLoans();
+        Assertions.assertTrue(account.getAvailableBalance() > 1500.00);
+        Assertions.assertTrue(account2.getAvailableBalance() < 1000.00);
     }
 
     @Test
     public void invalidLoanNumberPayback() {
-
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("55555222", "Current", 1000);
         testCustomer.addAccount(account);
@@ -508,13 +453,10 @@ public class NewBankTest {
         String result3 = test.processRequest(clientId, "PAYBACKLOAN 2");
 
         Assertions.assertEquals("Error. Invalid loan number.", result3);
-        test.clearLoans();
     }
 
     @Test
     public void insufficientFunds() {
-
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("44444222", "Current", 1000);
         testCustomer.addAccount(account);
@@ -535,17 +477,14 @@ public class NewBankTest {
         String result2 = test.processRequest(clientId2, "ACCEPTLOAN 1 77777111");
 
         Assertions.assertEquals("Success. Loan number 1 accepted by account 77777111.", result2);
-        account2.debit(1);
+        account2.debit(26);
         String result3 = test.processRequest(clientId, "PAYBACKLOAN 1");
 
         Assertions.assertEquals("Error. Insufficient funds.", result3);
-        test.clearLoans();
     }
   
     @Test
     public void showTakenLoans() {
-        // Initialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("66666666", "Current", 1000);
         testCustomer.addAccount(account);
@@ -570,14 +509,10 @@ public class NewBankTest {
         String result3 = test.processRequest(clientId2, "SHOWTAKENLOANS");
 
         Assertions.assertEquals("Loan Number: 1, Account Number: 66666666, Amount: 500.0, Interest Rate: 5%, Taken by: 77777777\n", result3);
-
-        test.clearLoans();
     }
       
     @Test
     public void showTakenLoansNoLoansTaken() {
-        // Initialisation
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("88888888", "Current", 1000);
         testCustomer.addAccount(account);
@@ -587,12 +522,10 @@ public class NewBankTest {
         String result = test.processRequest(clientId, "SHOWTAKENLOANS");
 
         Assertions.assertEquals("No loans taken", result);
-        test.clearLoans();
     }
 
     @Test
     public void getHelpShowMyAccounts() {
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("12121212", "Current", 1000);
         testCustomer.addAccount(account);
@@ -604,12 +537,10 @@ public class NewBankTest {
 
         Assertions.assertEquals("SHOWMYACCOUNTS\t\t\t\t\t\t\t\t\t\tShows all of the current customer's account details\n", result);
         Assertions.assertEquals("SHOWMYACCOUNTS\t\t\t\t\t\t\t\t\t\tShows all of the current customer's account details\n", result2);
-        test.clearLoans();
     }
 
     @Test
     public void getHelpNewAccount() {
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("13131313", "Current", 1000);
         testCustomer.addAccount(account);
@@ -625,7 +556,6 @@ public class NewBankTest {
 
     @Test
     public void getHelpMove() {
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("15151515", "Current", 1000);
         testCustomer.addAccount(account);
@@ -637,12 +567,10 @@ public class NewBankTest {
 
         Assertions.assertEquals("MOVE <Amount> <Debit account> <Credit account>\t\tMoves the amount specified between two of a customer's accounts\n", result);
         Assertions.assertEquals("MOVE <Amount> <Debit account> <Credit account>\t\tMoves the amount specified between two of a customer's accounts\n", result2);
-        test.clearLoans();
     }
 
     @Test
     public void getHelpPay() {
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("16161616", "Current", 1000);
         testCustomer.addAccount(account);
@@ -654,12 +582,10 @@ public class NewBankTest {
 
         Assertions.assertEquals("PAY <Amount> <Debit account> <Credit account>\t\tPays funds from one account to another account, which may be held by another customer\n", result);
         Assertions.assertEquals("PAY <Amount> <Debit account> <Credit account>\t\tPays funds from one account to another account, which may be held by another customer\n", result2);
-        test.clearLoans();
     }
 
     @Test
     public void getHelpOfferLoan() {
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("17171717", "Current", 1000);
         testCustomer.addAccount(account);
@@ -671,12 +597,10 @@ public class NewBankTest {
 
         Assertions.assertEquals("OFFERLOAN <Amount> <FromAccount> <Terms> <intrest>\tCreates a loan for the specified period, under the defined conditions\n", result);
         Assertions.assertEquals("OFFERLOAN <Amount> <FromAccount> <Terms> <intrest>\tCreates a loan for the specified period, under the defined conditions\n", result2);
-        test.clearLoans();
     }
 
     @Test
     public void getHelpShowMyOfferedLoans() {
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("18181818", "Current", 1000);
         testCustomer.addAccount(account);
@@ -688,12 +612,10 @@ public class NewBankTest {
 
         Assertions.assertEquals("SHOWMYOFFEREDLOANS\t\t\t\t\t\t\t\t\tShows all offered loans of the current customer\n", result);
         Assertions.assertEquals("SHOWMYOFFEREDLOANS\t\t\t\t\t\t\t\t\tShows all offered loans of the current customer\n", result2);
-        test.clearLoans();
     }
 
     @Test
     public void getHelpShowOpenLoans() {
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("19191919", "Current", 1000);
         testCustomer.addAccount(account);
@@ -705,12 +627,10 @@ public class NewBankTest {
 
         Assertions.assertEquals("SHOWOPENLOANS\t\t\t\t\t\t\t\t\t\tShows all open loans with the conditions of the loan.\n", result);
         Assertions.assertEquals("SHOWOPENLOANS\t\t\t\t\t\t\t\t\t\tShows all open loans with the conditions of the loan.\n", result2);
-        test.clearLoans();
     }
 
     @Test
     public void getHelpAcceptLoan() {
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("20202020", "Current", 1000);
         testCustomer.addAccount(account);
@@ -722,12 +642,10 @@ public class NewBankTest {
 
         Assertions.assertEquals("ACCEPTLOAN <Loan Number> <Account>\t\t\t\t\tThe open loan is accepted and the amount is credited to the given account.\n", result);
         Assertions.assertEquals("ACCEPTLOAN <Loan Number> <Account>\t\t\t\t\tThe open loan is accepted and the amount is credited to the given account.\n", result2);
-        test.clearLoans();
     }
 
     @Test
     public void getHelpPayBackLoan() {
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("21212121", "Current", 1000);
         testCustomer.addAccount(account);
@@ -739,12 +657,10 @@ public class NewBankTest {
 
         Assertions.assertEquals("PAYBACKLOAN <Loan Number>\t\t\t\t\t\t\tThe loan is repaid with interest\n", result);
         Assertions.assertEquals("PAYBACKLOAN <Loan Number>\t\t\t\t\t\t\tThe loan is repaid with interest\n", result2);
-        test.clearLoans();
     }
 
     @Test
     public void getHelpShowTakenLoans() {
-        NewBank test = NewBank.getBank();
         Customer testCustomer = new Customer();
         Account account = new Account("23232323", "Current", 1000);
         testCustomer.addAccount(account);
@@ -756,7 +672,6 @@ public class NewBankTest {
 
         Assertions.assertEquals("SHOWTAKENLOANS\t\t\t\t\t\t\t\t\t\tShows all taken loans of the current customer\n", result);
         Assertions.assertEquals("SHOWTAKENLOANS\t\t\t\t\t\t\t\t\t\tShows all taken loans of the current customer\n", result2);
-        test.clearLoans();
     }
 
 }

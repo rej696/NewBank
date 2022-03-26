@@ -1,5 +1,6 @@
 .project
 .classpath
+.vscode/
 **/build/**
 **/logs/**
 *.class

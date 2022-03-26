@@ -2,29 +2,24 @@ package newbank.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 
-public class NewBank {
+public class NewBank implements NewBankQuery_I{
 
     private static final NewBank bank = new NewBank();
     private HashMap<String, Customer> customers;
-    private ArrayList<Loan> loans;
-    private int lastLoanNumber;
+    private static final LoanManager loanManager = LoanManager.getLoanManager();
 
     private NewBank() {
         customers = new HashMap<>();
-        loans = new ArrayList<>();
         addTestData();
-        lastLoanNumber = 0;
     }
 
     public static NewBank getBank() {
         return bank;
     }
 
-    public void clearLoans(){
-        this.loans.clear();
-        lastLoanNumber = 0;
+    public void clearLoans() {
+        loanManager.clearLoans();
     }
 
     public void addCustomer(Customer customer, String customerID) {
@@ -65,12 +60,23 @@ public class NewBank {
         return customers.get(customerID.getKey());
     }
 
-    private ArrayList<Customer> getAllCustomers(){
+    private ArrayList<Customer> getAllCustomers() {
         ArrayList<Customer> customersArrayList = new ArrayList<Customer>();
         for(Customer c : customers.values()){
             customersArrayList.add(c);
         }
         return customersArrayList;
+    }
+
+    public Account getAccount(String accountNumber) {
+        for (String key : this.customers.keySet()) {
+            for (Account a : this.customers.get(key).getAllAccounts()) {
+                if (accountNumber.equals(a.getAccountNumber())) {
+                    return a;
+                }
+            }
+        }
+        return null;
     }
 
     private ArrayList<Account> getAllAccounts(){
@@ -164,27 +170,27 @@ public class NewBank {
                     }
                     case "OFFERLOAN": {
                         if (stringInputs.length > 4) {
-                            return offerLoan(Double.parseDouble(stringInputs[1]), stringInputs[2], Integer.parseInt(stringInputs[3]), Integer.parseInt(stringInputs[4]));
+                            return loanManager.offerLoan(Double.parseDouble(stringInputs[1]), stringInputs[2], Integer.parseInt(stringInputs[3]), Integer.parseInt(stringInputs[4]));
                         }
                     }
                     case "SHOWMYOFFEREDLOANS": {
-                        return showMyOfferedLoans(customer);
+                        return loanManager.showMyOfferedLoans(customer);
                     }
                     case "SHOWOPENLOANS": {
-                        return showOpenLoans(customer);
+                        return loanManager.showOpenLoans(customer);
                     }
                     case "ACCEPTLOAN": {
                         if (stringInputs.length > 2) {
-                            return acceptLoan(customer, Integer.parseInt(stringInputs[1]), stringInputs[2]);
+                            return loanManager.acceptLoan(customer, Integer.parseInt(stringInputs[1]), stringInputs[2]);
                         }
                     }
                     case "PAYBACKLOAN" : {
                         if (stringInputs.length > 1) {
-                            return paybackLoan(customer, Integer.parseInt(stringInputs[1]));
+                            return loanManager.paybackLoan(customer, Integer.parseInt(stringInputs[1]));
                         }
                     }
                     case "SHOWTAKENLOANS" : {
-                        return showTakenLoans(customer);
+                        return loanManager.showTakenLoans(customer);
                     }
                     case "HELP": {
                         return getHelp();
@@ -196,124 +202,6 @@ public class NewBank {
 
         }
         return "FAIL";
-    }
-
-    private String showTakenLoans(CustomerID customerID) {
-        Customer customer = this.getCustomer(customerID);
-        String result = "";
-
-        for (Account account : customer.getAllAccounts()) {
-            for(Loan loan: loans){
-                if(loan.getAccountTo() != null && loan.getAccountTo().getAccountNumber().equals(account.getAccountNumber())){
-                    result = result + "Loan Number: "+ loan.getNumber() +", Account Number: "+ loan.getAccountFrom().getAccountNumber() +", Amount: " + loan.getAmount() + ", Interest Rate: " + loan.getInterest() + "%, Taken by: " + loan.getAccountTo().getAccountNumber() + "\n";
-                }
-            }
-        }
-        return result == "" ? "No loans taken" : result;
-    }
-
-    private String paybackLoan(CustomerID customerID, int loanNumber) {
-        Customer customer = this.getCustomer(customerID);
-        if(!validLoanNumber(loanNumber)) {
-            return "Error. Invalid loan number.";
-        }
-        for(Loan loan: loans) {
-            if (loan.getNumber() == loanNumber) {
-                Account accountTo = loan.getAccountFrom();
-                Account accountFrom = loan.getAccountTo();
-                if(accountTo == null) {
-                    return "Error. Invalid account number.";
-                }
-                if(accountFrom == null) {
-                    return "Error. Invalid account number.";
-                }
-                double amount = loan.getAmount();
-                amount += loan.getAmount() / 100 * loan.getInterest();
-                if(amount >= accountFrom.getAvailableBalance()) {
-                    return "Error. Insufficient funds.";
-                }
-                accountFrom.debit(amount);
-                accountTo.credit(amount);
-                accountTo.setFrozenAmount(loan.getAmount() * -1);
-                return "Success. Loan Number: " + loan.getNumber() + ", Account Number From: " + accountFrom.getAccountNumber() + ", Account Number To: " + accountTo.getAccountNumber() + ", Amount: " + amount + "\n";
-            }
-        }
-        return "Error. Unable to payback loan.";
-    }
-
-    private String acceptLoan(CustomerID customerID, int loanNumber, String accountTo) {
-        Customer customer = this.getCustomer(customerID);
-        Account account = customer.getAccount(accountTo);
-        if(account == null) {
-            return "Error. Invalid account number.";
-        }
-        if(!validLoanNumber(loanNumber)) {
-            return "Error. Invalid loan number.";
-        }
-        for(Loan loan: loans) {
-            if (loan.getNumber() == loanNumber) {
-                loan.setAccountTo(account);
-                account.credit(loan.getAmount());
-                return "Success. Loan number " + loan.getNumber() + " accepted by account " + loan.getAccountTo().getAccountNumber() + ".";
-            }
-        }
-        return "Error. Unable to take loan.";
-    }
-
-    private boolean validLoanNumber(int loanNumber) {
-        for(Loan loan : loans) {
-            if(loan.getNumber() == loanNumber) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String showOpenLoans(CustomerID customerID) {
-        Customer customer = this.getCustomer(customerID);
-        String result = "";
-
-        for (Account account : customer.getAllAccounts()) {
-            for(Loan loan: loans){
-                if(!loan.getAccountFrom().getAccountNumber().equals(account.getAccountNumber())){
-                    result = result + "Loan Number: "+ loan.getNumber() +", Amount: " + loan.getAmount() + ", Term: " + loan.getTermDays() + " days, Interest Rate: " + loan.getInterest() + "%\n";
-                }
-            }
-        }
-
-        return result == "" ? "No loans available at present" : result;
-
-    }
-
-    private String showMyOfferedLoans(CustomerID customerID) {
-        Customer customer = this.getCustomer(customerID);
-        String result = "";
-
-        for (Account account : customer.getAllAccounts()) {
-            for(Loan loan: loans){
-                if(loan.getAccountFrom().getAccountNumber().equals(account.getAccountNumber())){
-                  result = result + "Loan Number: "+ loan.getNumber() +", Account Number: "+ loan.getAccountFrom().getAccountNumber() +", Amount: " + loan.getAmount() + ", Interest Rate: " + loan.getInterest() + "%"+ (loan.getAccountTo() == null ? "" : ", Taken by: " + loan.getAccountTo().getAccountNumber()) + "\n";
-                }
-            }
-        }
-        return result == "" ? "No loans offered" : result;
-    }
-
-    private String offerLoan(double amount, String accountNumber, int term, int interest) {
-        Account account = getAccount(accountNumber);
-        if(account == null) {
-            return "ERROR. Loan of " + amount + " cannot be offered from " + accountNumber + ". Account is non-existent.";
-        }
-        if(amount > account.getAvailableBalance()) {
-            return "ERROR. Loan of " + amount + " cannot be offered from " + accountNumber + ". Loan amount exceeds funds.";
-        }
-        if(interest > 10 || interest < 0) {
-            return "ERROR. Loan of " + amount + " cannot be offered from " + accountNumber + " with interest " + interest + "%. Interest is too high.";
-        }
-        this.lastLoanNumber += 1;
-        account.setFrozenAmount(amount);
-        loans.add(new Loan(amount, getAccount(accountNumber), term, interest, this.lastLoanNumber));
-        return "Success. Loan of " + amount + " offered from " + accountNumber + " for " + term + " days with interest of " + interest + "%";
     }
 
     private String moveFundsBetweenAccounts(CustomerID customerID, double amount, String fromAccountNumber, String toAccountNumber, boolean accountsBelongToSameCustomer) {
@@ -335,16 +223,7 @@ public class NewBank {
                 : "Success. " + amount + " paid from " + fromAccountNumber + " to " + toAccountNumber + "\n\nNew Balance\n\n" + account1;
     }
 
-    private Account getAccount(String accountNumber) {
-        for (String key : this.customers.keySet()) {
-            for (Account a : this.customers.get(key).getAllAccounts()) {
-                if (accountNumber.equals(a.getAccountNumber())) {
-                    return a;
-                }
-            }
-        }
-        return null;
-    }
+
 
 
     private String createAccount(CustomerID customerId, String name) {
