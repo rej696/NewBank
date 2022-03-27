@@ -145,6 +145,9 @@ public class NewBank implements NewBankQuery_I{
                     case "PARTPAYBACKLOAN" : {
                         return getHelpPartPayBackLoan();
                     }
+                    case "MAKEMONTHLYPAYMENT" : {
+                        return getHelpMakeMonthlyPayment();
+                    }
                     case "SHOWTAKENLOANS" : {
                         return getHelpShowTakenLoans();
                     }
@@ -195,6 +198,11 @@ public class NewBank implements NewBankQuery_I{
                     case "PARTPAYBACKLOAN" : {
                         if (stringInputs.length > 2) {
                             return loanManager.paybackLoanPartial(customer, Integer.parseInt(stringInputs[1]), Double.parseDouble(stringInputs[2]));
+                        }                        
+                    }
+                    case "MAKEMONTHLYPAYMENT" : {
+                        if (stringInputs.length > 1) {
+                        return loanManager.payMonthlyPayment(customer, Integer.parseInt(stringInputs[1]));
                         }                        
                     }
                     case "SHOWTAKENLOANS" : {
@@ -301,7 +309,9 @@ public class NewBank implements NewBankQuery_I{
                 getHelpShowOpenLoans() +
                 getHelpAcceptLoan() +
                 getHelpPayBackLoan() +
+                getHelpPartPayBackLoan() +
                 getHelpShowTakenLoans() +
+                getHelpMakeMonthlyPayment() +
                 "HELP\t\t\t\t\t\t\t\t\t\t\t\tShows this menu\n\n";
         return helpMsg;
     }
@@ -348,5 +358,9 @@ public class NewBank implements NewBankQuery_I{
 
     private String getHelpShowTakenLoans() {
         return "SHOWTAKENLOANS\t\t\t\t\t\t\t\t\t\tShows all taken loans of the current customer\n";
+    }
+
+    private String getHelpMakeMonthlyPayment() {
+        return "MAKEMONTHLYPAYMENT <Loan Number>\t\t\t\t\t\t\tMakes the value of monthly payment against the loan number required to pay off the loan evenly over the loan period\n";
     }
 }

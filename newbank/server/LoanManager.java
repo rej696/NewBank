@@ -78,6 +78,10 @@ public class LoanManager {
     }
   }
 
+  public String payMonthlyPayment(CustomerID customerID, int loanNumber){
+      return paybackLoanPartial(customerID, loanNumber, loans.get(loanNumber).getCurrentMonthlyLoanPaymentValue());
+  }
+
   private String handleLoanPayment(Loan loan, double value) {
     Account accountTo = loan.getAccountFrom();
     Account accountFrom = loan.getAccountTo();
@@ -87,7 +91,7 @@ public class LoanManager {
     if (value <= loanAmount) {
       loan.pay(value);
     } else {
-      // loans.remove(loan.getNumber());
+      loan.setLoanOpenStatus(false);
       paymentAmount = loanAmount;
     }
 

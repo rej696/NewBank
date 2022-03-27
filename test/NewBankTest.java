@@ -390,7 +390,9 @@ public class NewBankTest {
                 "SHOWOPENLOANS\t\t\t\t\t\t\t\t\t\tShows all open loans with the conditions of the loan.\n" +
                 "ACCEPTLOAN <Loan Number> <Account>\t\t\t\t\tThe open loan is accepted and the amount is credited to the given account.\n" +
                 "PAYBACKLOAN <Loan Number>\t\t\t\t\t\t\tThe loan is repaid with interest\n" +
+                "PARTPAYBACKLOAN <Loan Number> <Amount>\t\t\t\t\t\t\tThe amount is paid off the loan balance\n" +
                 "SHOWTAKENLOANS\t\t\t\t\t\t\t\t\t\tShows all taken loans of the current customer\n" +
+                "MAKEMONTHLYPAYMENT <Loan Number>\t\t\t\t\t\t\tMakes the value of monthly payment against the loan number required to pay off the loan evenly over the loan period\n" +
                 "HELP\t\t\t\t\t\t\t\t\t\t\t\tShows this menu\n\n", result);
     }
   
@@ -719,5 +721,38 @@ public class NewBankTest {
         }
     }
 
+    @Test
+    public void payMonthlyPayment() {
+        // FIXME
+        // TODO
+        Customer testCustomer = new Customer();
+        Account account = new Account("66666666", "Current", 2000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID100");
+        test.addCustomer(testCustomer, clientId.getKey());
+
+        Customer testCustomer2 = new Customer();
+        Account account2 = new Account("77777777", "Current", 2000);
+        testCustomer2.addAccount(account2);
+        CustomerID clientId2 = new CustomerID("TestID101");
+        test.addCustomer(testCustomer2, clientId2.getKey());
+
+        String result = test.processRequest(clientId, "OFFERLOAN 1000 66666666 365 5");
+
+        Assertions.assertEquals("Success. Loan of 1000.0 offered from 66666666 for 365 days with interest of 5%", result);
+        Assertions.assertEquals(1000, account.getAvailableBalance());
+
+        String result2 = test.processRequest(clientId2, "ACCEPTLOAN 1 77777777");
+
+        Assertions.assertEquals("Success. Loan number 1 accepted by account 77777777.", result2);
+
+        String result3 = test.processRequest(clientId2, "PAYMONTHLYPAYMENT 1");
+
+        Assertions.assertEquals("Success. Loan Number: 1, Account Number From: 77777777, Account Number To: 66666666, Amount: 85.61\n", result3);
+
+        String result4 = test.processRequest(clientId2, "SHOWOPENLOANS");
+
+        Assertions.assertEquals("Loan Number: 1, Amount: 914.0, Term: 365 days, Interest Rate: 5%\n", result4);
+    }
 }
 
