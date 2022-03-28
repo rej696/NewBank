@@ -247,7 +247,7 @@ public class NewBankTest {
 
         String result3 = test.processRequest(clientId2, "SHOWOPENLOANS");
 
-        Assertions.assertEquals("Loan Number: 1, Amount: 500.0, Term: 365 days, Interest Rate: 5%\nLoan Number: 2, Amount: 500.0, Term: 365 days, Interest Rate: 5%\n", result3);
+        Assertions.assertEquals("Loan Number: 1, Amount: 500.00, Term: 365 days, Interest Rate: 5%\nLoan Number: 2, Amount: 500.00, Term: 365 days, Interest Rate: 5%\n", result3);
     }
 
     @Test
@@ -425,7 +425,7 @@ public class NewBankTest {
 
         Assertions.assertEquals("Success. Loan Number: 1, Account Number From: 55555999, Account Number To: 55555888, Amount: 500.55\n", result3);
 
-        Assertions.assertTrue(account.getAvailableBalance() > 1500.00);
+        Assertions.assertTrue(account.getAvailableBalance() > 1000.00);
         Assertions.assertTrue(account2.getAvailableBalance() < 1000.00);
     }
 
@@ -555,7 +555,7 @@ public class NewBankTest {
 
         String result4 = test.processRequest(clientId2, "SHOWOPENLOANS");
 
-        Assertions.assertEquals("Loan Number: 1, Amount: 450.0, Term: 365 days, Interest Rate: 5%\n", result4);
+        Assertions.assertEquals("Loan Number: 1, Amount: 450.00, Term: 365 days, Interest Rate: 5%\n", result4);
     }
 
     @Test
@@ -721,38 +721,32 @@ public class NewBankTest {
         }
     }
 
-    // @Test
-    // public void payMonthlyPayment() {
-    //     // FIXME
-    //     // TODO
-    //     Customer testCustomer = new Customer();
-    //     Account account = new Account("98523457", "Current", 2000);
-    //     testCustomer.addAccount(account);
-    //     CustomerID clientId = new CustomerID("TestID100");
-    //     test.addCustomer(testCustomer, clientId.getKey());
+    @Test
+    public void payMonthlyPayment() {
+        Customer testCustomer = new Customer();
+        Account account = new Account("98523457", "Current", 2000);
+        testCustomer.addAccount(account);
+        CustomerID clientId = new CustomerID("TestID100");
+        test.addCustomer(testCustomer, clientId.getKey());
 
-    //     Customer testCustomer2 = new Customer();
-    //     Account account2 = new Account("98523456", "Current", 2000);
-    //     testCustomer2.addAccount(account2);
-    //     CustomerID clientId2 = new CustomerID("TestID101");
-    //     test.addCustomer(testCustomer2, clientId2.getKey());
+        Customer testCustomer2 = new Customer();
+        Account account2 = new Account("98523456", "Current", 2000);
+        testCustomer2.addAccount(account2);
+        CustomerID clientId2 = new CustomerID("TestID101");
+        test.addCustomer(testCustomer2, clientId2.getKey());
 
-    //     String result = test.processRequest(clientId, "OFFERLOAN 1000 98523457 365 5");
+        String result = test.processRequest(clientId, "OFFERLOAN 1000 98523457 365 5");
+        Assertions.assertEquals("Success. Loan of 1000.0 offered from 98523457 for 365 days with interest of 5%", result);
+        Assertions.assertEquals(1000, account.getAvailableBalance());
 
-    //     Assertions.assertEquals("Success. Loan of 1000.0 offered from 98523457 for 365 days with interest of 5%", result);
-    //     Assertions.assertEquals(1000, account.getAvailableBalance());
+        String result2 = test.processRequest(clientId2, "ACCEPTLOAN 1 98523456");
+        Assertions.assertEquals("Success. Loan number 1 accepted by account 98523456.", result2);
 
-    //     String result2 = test.processRequest(clientId2, "ACCEPTLOAN 1 98523456");
+        String result3 = test.processRequest(clientId2, "MAKEMONTHLYPAYMENT 1");
+        Assertions.assertEquals("Success. Loan Number: 1, Account Number From: 98523456, Account Number To: 98523457, Amount: 84.27\n", result3);
 
-    //     Assertions.assertEquals("Success. Loan number 1 accepted by account 98523456.", result2);
+        String result4 = test.processRequest(clientId2, "SHOWOPENLOANS");
+        Assertions.assertEquals("Loan Number: 1, Amount: 915.73, Term: 365 days, Interest Rate: 5%\n", result4);
 
-    //     String result3 = test.processRequest(clientId2, "PAYMONTHLYPAYMENT 1");
-
-    //     Assertions.assertEquals("Success. Loan Number: 1, Account Number From: 98523456, Account Number To: 98523457, Amount: 85.61\n", result3);
-
-    //     String result4 = test.processRequest(clientId2, "SHOWOPENLOANS");
-
-    //     Assertions.assertEquals("Loan Number: 1, Amount: 914.0, Term: 365 days, Interest Rate: 5%\n", result4);
-    // }
+    }
 }
-

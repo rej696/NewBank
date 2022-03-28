@@ -101,7 +101,7 @@ public class Loan {
     }
 
     public double getDailyInterestRate() {
-        return this.interest / 365;
+        return (double) this.interest / 365.0;
     }
 
     public double getInitialMonthlyLoanPaymentValue() {
@@ -112,7 +112,7 @@ public class Loan {
         // n is total number of periods (loan length in days)
 
         double P = this.getInitialAmount();
-        double r = this.getDailyInterestRate();
+        double r = this.getDailyInterestRate() / 100;
         double n = this.termDays;
         double A = P * (r * Math.pow((1+r),n)/(Math.pow((1+r),n) - 1));
 
@@ -127,7 +127,7 @@ public class Loan {
         // n is total number of periods (loan length in days)
 
         double P = this.amount;
-        double r = this.getDailyInterestRate();
+        double r = this.getDailyInterestRate() / 100;
         double n = this.getLoanDaysRemaining();
         double A = P * (r * Math.pow((1+r),n)/(Math.pow((1+r),n) - 1));
 

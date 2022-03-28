@@ -2,6 +2,7 @@ package newbank.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class NewBank implements NewBankQuery_I{
 
@@ -31,7 +32,7 @@ public class NewBank implements NewBankQuery_I{
         kim.addAccount(new Account(generateAccountNumber(), "Checking", 1050.0));
         customers.put("Kim", kim);
 
-        Customer andy = new Customer();
+        Customer andy = new Customer("password");
         andy.addAccount(new Account(generateAccountNumber(), "Main", 3000.0));
         customers.put("Andy", andy);
 
@@ -103,7 +104,10 @@ public class NewBank implements NewBankQuery_I{
 
     public synchronized CustomerID checkLogInDetails(String userName, String password) {
         if (customers.containsKey(userName)) {
-            return new CustomerID(userName);
+            Customer customer = customers.get(userName);
+            if (customer.correctPassword(password)) {
+                return new CustomerID(userName);
+            }
         }
         return null;
     }
@@ -202,7 +206,7 @@ public class NewBank implements NewBankQuery_I{
                     }
                     case "MAKEMONTHLYPAYMENT" : {
                         if (stringInputs.length > 1) {
-                        return loanManager.payMonthlyPayment(customer, Integer.parseInt(stringInputs[1]));
+                            return loanManager.payMonthlyPayment(customer, Integer.parseInt(stringInputs[1]));
                         }                        
                     }
                     case "SHOWTAKENLOANS" : {
@@ -239,9 +243,6 @@ public class NewBank implements NewBankQuery_I{
                 : "Success. " + amount + " paid from " + fromAccountNumber + " to " + toAccountNumber + "\n\nNew Balance\n\n" + account1;
     }
 
-
-
-
     private String createAccount(CustomerID customerId, String name) {
 
         if (isValidAccountName(name)) {
@@ -267,6 +268,12 @@ public class NewBank implements NewBankQuery_I{
             }
         }
         return true;
+    }
+
+    private boolean isValidPassword(String password) {
+        boolean length = (password.length() > 7);
+        boolean charTypes = Pattern.matches("[a-z&&A-Z&&0-9&&$+,:;=?@#|'<>.-^*()%!]",password);
+        return length && charTypes;
     }
 
     private String showMyAccounts(CustomerID customer) {

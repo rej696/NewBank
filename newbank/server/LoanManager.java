@@ -101,7 +101,7 @@ public class LoanManager {
 
     accountFrom.debit(paymentAmount);
     accountTo.credit(paymentAmount);
-    accountTo.setFrozenAmount(paymentAmount * -1);
+    // accountTo.setFrozenAmount(paymentAmount * -1);
     return "Success. Loan Number: " + loan.getNumber() + ", Account Number From: "
         + accountFrom.getAccountNumber() + ", Account Number To: " + accountTo.getAccountNumber()
         + ", Amount: " + String.format("%.2f", paymentAmount) + "\n";
@@ -119,6 +119,7 @@ public class LoanManager {
     } else {
       loan.setAccountTo(account);
       account.credit(loan.getAmount());
+      loan.getAccountFrom().setFrozenAmount(0);
       return "Success. Loan number " + loan.getNumber() + " accepted by account "
           + loan.getAccountTo().getAccountNumber() + ".";
     }
@@ -132,7 +133,7 @@ public class LoanManager {
       for (int loanID : loans.keySet()) {
         Loan loan = loans.get(loanID);
         if (!loan.getAccountFrom().getAccountNumber().equals(account.getAccountNumber())) {
-          result = result + "Loan Number: " + loan.getNumber() + ", Amount: " + loan.getAmount()
+          result = result + "Loan Number: " + loan.getNumber() + ", Amount: " + String.format("%.2f",loan.getAmount())
               + ", Term: " + loan.getTermDays() + " days, Interest Rate: " + loan.getInterest()
               + "%\n";
         }

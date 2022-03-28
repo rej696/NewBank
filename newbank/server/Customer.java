@@ -5,9 +5,29 @@ import java.util.ArrayList;
 public class Customer {
 
     private final ArrayList<Account> accounts;
+    private String password;
+    private int incorrectPasswordAttempts;
+
+    public Customer(String password) {
+        accounts = new ArrayList<>();
+        this.incorrectPasswordAttempts = 0;
+        this.password = password;
+    }
 
     public Customer() {
         accounts = new ArrayList<>();
+        this.password = "";
+    }
+
+    public boolean correctPassword(String password) {
+        if (password == this.password && incorrectPasswordAttempts < 4){
+            incorrectPasswordAttempts = 0;
+            return true;
+        }
+        else {
+            incorrectPasswordAttempts++;
+            return false;
+        }
     }
 
     public String accountsToString() {
@@ -30,11 +50,9 @@ public class Customer {
             }
         }
         return null;
-
     }
 
     public ArrayList<Account> getAllAccounts() {
         return this.accounts;
     }
-
 }
