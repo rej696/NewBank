@@ -1,7 +1,5 @@
 package newbank.server;
 
-import newbank.client.ExampleClient;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
