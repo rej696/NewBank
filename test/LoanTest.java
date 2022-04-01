@@ -152,7 +152,7 @@ public class LoanTest extends test.MainTest {
 
         String result3 = test.processRequest(this.customerId1, "PAYBACKLOAN 1");
 
-        Assertions.assertEquals("Success. Loan Number: 1, Account Number From: 23456789, Account Number To: 12345678, Amount: 500.55\n", result3);
+        Assertions.assertEquals("Success. Loan Number: 1, Account Number From: 23456789, Account Number To: 12345678, Amount: 525.00\n", result3);
 
         Assertions.assertTrue(this.customer1.getAllAccounts().get(0).getAvailableBalance() > 1000.00);
         Assertions.assertTrue(this.customer2.getAllAccounts().get(0).getAvailableBalance() < 1000.00);
