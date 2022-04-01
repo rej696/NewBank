@@ -56,7 +56,7 @@ public class LoanManager {
         return "Error. Invalid account number.";
       }
 
-      return handleLoanPayment(loan, loan.getAmount());
+      return handleLoanPayment(loan, loan.getAmountWithInterest(), true);
     }
   }
 
@@ -74,7 +74,7 @@ public class LoanManager {
         return "Error. Invalid account number.";
       }
 
-      return handleLoanPayment(loan, value);
+      return handleLoanPayment(loan, value, false);
     }
   }
 
@@ -82,19 +82,23 @@ public class LoanManager {
       return paybackLoanPartial(customerID, loanNumber, loans.get(loanNumber).getCurrentMonthlyLoanPaymentValue());
   }
 
-  private String handleLoanPayment(Loan loan, double value) {
+  private String handleLoanPayment(Loan loan, double value, boolean payBackInFull) {
     Account accountTo = loan.getAccountFrom();
     Account accountFrom = loan.getAccountTo();
     double paymentAmount = value;
-    double loanAmount = loan.getAmount();
+    double loanAmount = payBackInFull ? loan.getEndAmount() : loan.getAmountWithInterest();
 
-    if (value <= loanAmount) {
-      loan.pay(value);
-    } else {
+    if(payBackInFull){
       loan.setLoanOpenStatus(false);
       paymentAmount = loanAmount;
+    }else {
+      if (value <= loanAmount) {
+        loan.pay(value);
+      } else {
+        loan.setLoanOpenStatus(false);
+        paymentAmount = loanAmount;
+      }
     }
-
     if (paymentAmount > accountFrom.getAvailableBalance()) {
       return "Error. Insufficient funds.";
     }

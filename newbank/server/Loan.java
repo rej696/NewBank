@@ -14,8 +14,10 @@ public class Loan {
     private int termDays;
     private int interest;
     private int number;
+    private double interestAmount;
     private LocalDate timeOfLoanIssue;
     private LocalDate timeOfLastInterestPayment;
+    private LocalDate interestDueDate;
     private boolean openLoan;
 
     public Loan(double amount, Account accountFrom, int termDays, int interest, int number) {
@@ -27,7 +29,9 @@ public class Loan {
         this.number = number;
         this.timeOfLoanIssue = currentTime.get().plusDays(0);
         this.timeOfLastInterestPayment = currentTime.get().plusDays(0);
+        this.interestDueDate = currentTime.get().plusDays(365);
         this.openLoan = true;
+        this.interestAmount = 0;
     }
 
     public boolean isLoanOpen() {
@@ -47,13 +51,31 @@ public class Loan {
     }
 
     public double getAmount() {
-        LocalDate now = currentTime.get();
-        for (LocalDate i = this.timeOfLastInterestPayment; i.isBefore(now); i = i.plusDays(1)) {
-          double dailyInterest = getDailyInterest();
-          this.amount += dailyInterest;
-        }
-        this.timeOfLastInterestPayment = now;
         return amount;
+    }
+
+    public double getAmountWithInterest(){
+        LocalDate now = currentTime.get();
+        return this.getAmountWithIntrestToDate(now);
+    }
+
+    private double getAmountWithIntrestToDate(LocalDate date){
+        for (LocalDate i = this.timeOfLastInterestPayment; i.isBefore(date); i = i.plusDays(1)) {
+            double dailyInterest = getDailyInterest();
+            this.interestAmount += dailyInterest;
+
+            if(interestDueDate == i){
+                this.interestDueDate = interestDueDate.plusDays(365);
+                this.amount += this.interestAmount;
+                this.interestAmount = 0;
+            }
+        }
+        this.timeOfLastInterestPayment = date;
+        return this.amount + this.interestAmount;
+    }
+
+    public double getEndAmount(){
+        return this.getAmountWithIntrestToDate(this.timeOfLoanIssue.plusDays(this.termDays));
     }
 
     public Account getAccountFrom() {
