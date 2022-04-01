@@ -26,6 +26,7 @@ public class NewBank implements NewBankQuery_I{
     public void addCustomer(Customer customer, String customerID) {
         this.customers.put(customerID, customer);
     }
+    public void clearCustomers() { this.customers.clear(); }
 
     private void addTestData() {
         Customer kim = new Customer();
