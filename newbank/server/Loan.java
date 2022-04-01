@@ -14,7 +14,7 @@ public class Loan {
     private int termDays;
     private int interest;
     private int number;
-    private int interestAmount;
+    private double interestAmount;
     private LocalDate timeOfLoanIssue;
     private LocalDate timeOfLastInterestPayment;
     private LocalDate interestDueDate;
@@ -56,7 +56,11 @@ public class Loan {
 
     public double getAmountWithInterest(){
         LocalDate now = currentTime.get();
-        for (LocalDate i = this.timeOfLastInterestPayment; i.isBefore(now); i = i.plusDays(1)) {
+        return this.getAmountWithIntrestToDate(now);
+    }
+
+    private double getAmountWithIntrestToDate(LocalDate date){
+        for (LocalDate i = this.timeOfLastInterestPayment; i.isBefore(date); i = i.plusDays(1)) {
             double dailyInterest = getDailyInterest();
             this.interestAmount += dailyInterest;
 
@@ -66,12 +70,12 @@ public class Loan {
                 this.interestAmount = 0;
             }
         }
-        this.timeOfLastInterestPayment = now;
+        this.timeOfLastInterestPayment = date;
         return this.amount + this.interestAmount;
     }
 
     public double getEndAmount(){
-        return this.amount += this.amount / 100 * this.interest;
+        return this.getAmountWithIntrestToDate(this.timeOfLoanIssue.plusDays(this.termDays));
     }
 
     public Account getAccountFrom() {

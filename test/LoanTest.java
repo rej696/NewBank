@@ -159,6 +159,27 @@ public class LoanTest extends test.MainTest {
     }
 
     @Test
+    public void paybackLoanTwoYears() {
+        String result = test.processRequest(this.customerId1, "OFFERLOAN 500 12345678 730 5");
+
+        Assertions.assertEquals("Success. Loan of 500.0 offered from 12345678 for 730 days with interest of 5%", result);
+        Assertions.assertEquals(500, this.customer1.getAllAccounts().get(0).getAvailableBalance());
+
+        String result2 = test.processRequest(this.customerId2, "ACCEPTLOAN 1 23456789");
+
+        Assertions.assertEquals("Success. Loan number 1 accepted by account 23456789.", result2);
+
+        setCurrentTime(LocalDate.of(1996, 3, 14));
+
+        String result3 = test.processRequest(this.customerId1, "PAYBACKLOAN 1");
+
+        Assertions.assertEquals("Success. Loan Number: 1, Account Number From: 23456789, Account Number To: 12345678, Amount: 550.00\n", result3);
+
+        Assertions.assertTrue(this.customer1.getAllAccounts().get(0).getAvailableBalance() > 1000.00);
+        Assertions.assertTrue(this.customer2.getAllAccounts().get(0).getAvailableBalance() < 1000.00);
+    }
+
+    @Test
     public void invalidLoanNumberPayback() {
         String result = test.processRequest(this.customerId1, "OFFERLOAN 500 12345678 365 5");
 
