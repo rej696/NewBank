@@ -2,6 +2,7 @@ package newbank.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.security.KeyPair;
@@ -33,31 +34,18 @@ public class NewBankClientHandler extends Thread {
   public void run() {
     // keep getting requests from the client and processing them
     try {
-      // ask for user name
-      printLn("Enter Username");
-      String userName = readLn();
-      // ask for password
-      printLn("Enter Password");
-      String password = SecurityUtilities.getSecurePassword(readLn());
-    //   String password = readLn();
-      printLn("Checking Details...");
-      // authenticate user and get customer ID token from bank for use in subsequent requests
-      CustomerID customer = bank.checkLogInDetails(userName, password);
-      // if the user is authenticated then get requests from the user and process them
-      if (customer != null) {
-        printLn("Log In Successful. What do you want to do?");
-        while (true) {
-          String request = readLn();
-          System.out.println("Request from " + customer.getKey());
-          String response = bank.processRequest(customer, request);
-          printLn(response);
-          // Serialize Bank Object
-          NewBank.save();
+      while (true) {
+        printLn("Log On (LOGON) or Create a User (CREATENEWUSER) or EXIT");
+        switch (readLn()) {
+          case "LOGON":
+            logOn();
+            break;
+          case "CREATENEWUSER":
+            createNewUser();
+            break;
         }
-      } else {
-        printLn("Log In Failed");
       }
-    } catch (IOException e) {
+    } catch (EOFException e) {} catch (IOException e) {
       e.printStackTrace();
     } finally {
       try {
@@ -68,6 +56,49 @@ public class NewBankClientHandler extends Thread {
         Thread.currentThread().interrupt();
       }
     }
+  }
+
+  private void logOn() throws IOException {
+    // ask for user name
+    printLn("Enter Username");
+    String userName = readLn();
+    // ask for password
+    printLn("Enter Password");
+    String password = SecurityUtilities.getSecurePassword(readLn());
+    //   String password = readLn();
+    printLn("Checking Details...");
+    // authenticate user and get customer ID token from bank for use in subsequent requests
+    CustomerID customer = bank.checkLogInDetails(userName, password);
+    // if the user is authenticated then get requests from the user and process them
+    if (customer != null) {
+      printLn("Log In Successful. What do you want to do?");
+      while (true) {
+        String request = readLn();
+        System.out.println("Request from " + customer.getKey());
+
+        if (request.equals("LOGOUT")) {
+          break;
+        }
+
+        String response = bank.processRequest(customer, request);
+        printLn(response);
+        // Serialize Bank Object
+        NewBank.save();
+      }
+    } else {
+      printLn("Log In Failed");
+    }
+  }
+
+  private void createNewUser() throws IOException {
+    // ask for user name
+    printLn("Enter Username");
+    String userName = readLn();
+    // ask for password
+    printLn("Enter Password");
+    String password = readLn();
+
+    printLn(bank.createCustomer(userName, password));
   }
 
   private void printLn(String s) throws IOException {

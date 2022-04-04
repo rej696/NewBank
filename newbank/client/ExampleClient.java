@@ -3,6 +3,7 @@ package newbank.client;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
@@ -54,6 +55,9 @@ public class ExampleClient extends Thread {
             while (true) {
               System.out.println(readLine());
             }
+          } catch (EOFException e) {
+            System.out.println("Bank Closed");
+            System.exit(0);
           } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -67,7 +71,6 @@ public class ExampleClient extends Thread {
 
   public static void main(String[] args)
     throws IOException, InterruptedException {
-    // SecurityUtilities.init();
     if (args.length >= 2) {
       new ExampleClient(args[0], Integer.parseInt(args[1])).start();
     } else {
@@ -86,7 +89,13 @@ public class ExampleClient extends Thread {
         // objectOutputStream.close();
         while (true) {
           String command = userInput.readLine();
-          SecurityUtilities.send(bankServerOut, command, serverPublicKey);
+          if (command.isEmpty()) {
+            SecurityUtilities.send(bankServerOut, "\0", serverPublicKey);
+          } else if (command.equals("EXIT")) {
+            System.exit(0);
+          } else {
+            SecurityUtilities.send(bankServerOut, command, serverPublicKey);
+          }
         }
       } catch (IOException e) {
         e.printStackTrace();
