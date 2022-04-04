@@ -1,12 +1,20 @@
 package newbank.server;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
+import newbank.util.SecurityUtilities;
 
-public class NewBank implements NewBankQuery_I{
+public class NewBank implements NewBankQuery_I, Serializable{
 
-    private static final NewBank bank = new NewBank();
+    private static final String dbPath = "db/NewBank.ser";
+    private static final NewBank bank = loadBank();
     private HashMap<String, Customer> customers;
     private static final LoanManager loanManager = LoanManager.getLoanManager();
 
@@ -15,8 +23,41 @@ public class NewBank implements NewBankQuery_I{
         addTestData();
     }
 
+    private static NewBank loadBank() {
+        NewBank loadedBank = null;
+        try {
+            // try to deserialize the stored NewBank
+            FileInputStream fileIn = new FileInputStream(dbPath);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            loadedBank = (NewBank) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException | ClassNotFoundException e) {
+            // create a new NewBank if there is an error loading from serialized data
+            loadedBank = new NewBank();
+            NewBank.save(loadedBank);
+        }
+        return loadedBank;
+    }
+
     public static NewBank getBank() {
         return bank;
+    }
+
+    private static void save(NewBank bank) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(dbPath);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(bank);
+            out.close();
+            fileOut.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void save() {
+        NewBank.save(bank);
     }
 
     public void clearLoans() {
@@ -33,7 +74,7 @@ public class NewBank implements NewBankQuery_I{
         kim.addAccount(new Account(generateAccountNumber(), "Checking", 1050.0));
         customers.put("Kim", kim);
 
-        Customer andy = new Customer("password");
+        Customer andy = new Customer(SecurityUtilities.getSecurePassword("password"));
         andy.addAccount(new Account(generateAccountNumber(), "Main", 3000.0));
         customers.put("Andy", andy);
 

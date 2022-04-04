@@ -1,6 +1,8 @@
 package newbank.server;
 
-public class Account {
+import java.io.Serializable;
+
+public class Account implements Serializable {
 
     private final String accountNumber;
     private final String accountName;

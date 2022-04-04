@@ -2,9 +2,10 @@ package newbank.server;
 
 import java.time.LocalDate;
 import java.util.function.Supplier;
+import java.io.Serializable;
 import java.lang.Math;
 
-public class Loan {
+public class Loan implements Serializable {
     public static Supplier<LocalDate> currentTime = LocalDate::now;
     
     private double amount;
