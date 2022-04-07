@@ -19,7 +19,6 @@ public class AccountTest extends test.MainTest {
         Assertions.assertEquals("Account with name SAVING was created", result);
     }
 
-
     @Test
     public void showAccountsNoAccount() {
         Customer testCustomer = new Customer();

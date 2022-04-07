@@ -1,8 +1,9 @@
 package newbank.server;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Customer {
+public class Customer implements Serializable {
 
     private final ArrayList<Account> accounts;
     private String password;
@@ -20,7 +21,7 @@ public class Customer {
     }
 
     public boolean correctPassword(String password) {
-        if (password == this.password && incorrectPasswordAttempts < 4){
+        if (password.equals(this.password) && incorrectPasswordAttempts < 4){
             incorrectPasswordAttempts = 0;
             return true;
         }

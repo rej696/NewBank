@@ -1,8 +1,9 @@
 package newbank.server;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class LoanManager {
+public class LoanManager implements Serializable {
   private static final LoanManager loanManager = new LoanManager();
   private static final NewBankQuery_I bank = NewBank.getBank();
 
