@@ -38,7 +38,7 @@ PAYBACKLOAN <Loan Number>
 e.g. PAYBACKLOAN 1
 Returns SUCCESS or FAIL Message
 
-PARTPAYBACKLOAN
+PARTPAYBACKLOAN <Loan Number> <Amount>
 e.g. PARTPAYBACKLOAN 1 50
 Returns SUCCESS or FAIL Message
 
